@@ -5,6 +5,8 @@ export interface User {
     phone?: string;
     image?: string;
     role: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Product {

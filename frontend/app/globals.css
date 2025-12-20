@@ -30,7 +30,6 @@
 
 * {
   box-sizing: border-box;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 html {
@@ -177,10 +176,12 @@ img {
 .input {
   width: 100%;
   padding: 0.75rem 1rem;
+  padding-left: 1rem; /* Base padding */
   border: 2px solid var(--color-border);
   border-radius: 0.5rem;
   font-size: 1rem;
   outline: none;
+  background-color: white;
 }
 
 .input:focus {

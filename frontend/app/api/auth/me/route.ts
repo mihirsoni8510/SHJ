@@ -19,6 +19,8 @@ export async function GET() {
                 phone: true,
                 role: true,
                 image: true,
+                createdAt: true,
+                updatedAt: true,
             },
         });
 

@@ -45,6 +45,8 @@ export async function POST(request: NextRequest) {
                 phone: true,
                 role: true,
                 image: true,
+                createdAt: true,
+                updatedAt: true,
             },
         });
 

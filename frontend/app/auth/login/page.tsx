@@ -31,8 +31,12 @@ export default function LoginPage() {
 
     const onSubmit = async (data: LoginForm) => {
         try {
-            await login.mutateAsync(data);
-            router.push('/');
+            const res = await login.mutateAsync(data);
+            if (res.user.role === 'admin') {
+                router.push('/admin');
+            } else {
+                router.push('/');
+            }
         } catch (error) {
             // Error handled by mutation
         }
@@ -42,6 +46,11 @@ export default function LoginPage() {
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-gradient-to-br from-amber-50 to-orange-50">
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10">
+                    <div className="flex justify-center mb-6">
+                        <Link href="/" className="text-2xl font-bold" style={{ fontFamily: 'var(--font-heading)' }}>
+                            SHJ
+                        </Link>
+                    </div>
                     {/* Header */}
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -68,7 +77,7 @@ export default function LoginPage() {
                                     type="email"
                                     id="email"
                                     placeholder="you@example.com"
-                                    className="input pl-11"
+                                    className="input !pl-12"
                                 />
                             </div>
                             {errors.email && (
@@ -90,7 +99,7 @@ export default function LoginPage() {
                                     type={showPassword ? 'text' : 'password'}
                                     id="password"
                                     placeholder="••••••••"
-                                    className="input pl-11 pr-11"
+                                    className="input !pl-12 !pr-12"
                                 />
                                 <button
                                     type="button"

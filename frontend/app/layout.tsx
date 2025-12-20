@@ -3,8 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Providers from "@/components/providers";
-import Header from "@/components/ui/Header";
-import Footer from "@/components/ui/Footer";
+import LayoutContent from "@/components/LayoutContent";
 
 export const metadata: Metadata = {
   title: "Shree Harikrupa Jewellers - Exquisite Jewelry Collection",
@@ -20,11 +19,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <Providers>
-          <Header />
-          <main className="min-h-screen">
+          <LayoutContent>
             {children}
-          </main>
-          <Footer />
+          </LayoutContent>
         </Providers>
       </body>
     </html>

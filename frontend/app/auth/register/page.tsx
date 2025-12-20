@@ -50,6 +50,11 @@ export default function RegisterPage() {
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-gradient-to-br from-amber-50 to-orange-50">
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10">
+                    <div className="flex justify-center mb-6">
+                        <Link href="/" className="text-2xl font-bold" style={{ fontFamily: 'var(--font-heading)' }}>
+                            SHJ
+                        </Link>
+                    </div>
                     {/* Header */}
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -71,13 +76,15 @@ export default function RegisterPage() {
                                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                     <FiUser className="w-5 h-5" />
                                 </div>
+
                                 <input
                                     {...register('name')}
                                     type="text"
                                     id="name"
                                     placeholder="John Doe"
-                                    className="input pl-11"
+                                    className="input !pl-12"
                                 />
+
                             </div>
                             {errors.name && (
                                 <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
@@ -98,7 +105,7 @@ export default function RegisterPage() {
                                     type="email"
                                     id="email"
                                     placeholder="you@example.com"
-                                    className="input pl-11"
+                                    className="input !pl-12"
                                 />
                             </div>
                             {errors.email && (
@@ -120,7 +127,7 @@ export default function RegisterPage() {
                                     type="tel"
                                     id="phone"
                                     placeholder="+91 1234567890"
-                                    className="input pl-11"
+                                    className="input !pl-12"
                                 />
                             </div>
                             {errors.phone && (
@@ -142,7 +149,7 @@ export default function RegisterPage() {
                                     type={showPassword ? 'text' : 'password'}
                                     id="password"
                                     placeholder="••••••••"
-                                    className="input pl-11 pr-11"
+                                    className="input !pl-12 !pr-12"
                                 />
                                 <button
                                     type="button"
@@ -171,7 +178,7 @@ export default function RegisterPage() {
                                     type={showConfirmPassword ? 'text' : 'password'}
                                     id="confirmPassword"
                                     placeholder="••••••••"
-                                    className="input pl-11 pr-11"
+                                    className="input !pl-12 !pr-12"
                                 />
                                 <button
                                     type="button"

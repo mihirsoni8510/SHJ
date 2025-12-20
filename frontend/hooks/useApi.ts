@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import type { User, Product, CartItem, WishlistItem, Category } from '@/lib/types';
+import type { User, Product, CartItem, WishlistItem, Category, Order } from '@/lib/types';
 
 const api = axios.create({
     baseURL: '/api',
@@ -108,6 +108,60 @@ export function useProducts(filters?: {
     });
 }
 
+export function useAdminProducts() {
+    return useQuery({
+        queryKey: ['admin-products'],
+        queryFn: async () => {
+            const { data } = await api.get('/admin/products');
+            return data.products as Product[];
+        },
+    });
+}
+
+export function useCreateProduct() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (productData: Partial<Product>) => {
+            const { data } = await api.post('/admin/products', productData);
+            return data.product;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+            toast.success('Product created successfully!');
+        },
+    });
+}
+
+export function useUpdateProduct() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, data: productData }: { id: string; data: Partial<Product> }) => {
+            const { data } = await api.patch(`/admin/products/${id}`, productData);
+            return data.product;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+            toast.success('Product updated successfully!');
+        },
+    });
+}
+
+export function useDeleteProduct() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            await api.delete(`/admin/products/${id}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+            toast.success('Product deleted successfully!');
+        },
+    });
+}
+
 export function useProduct(slug: string) {
     return useQuery({
         queryKey: ['product', slug],
@@ -116,6 +170,17 @@ export function useProduct(slug: string) {
             return data.product as Product;
         },
         enabled: !!slug,
+    });
+}
+
+export function useAdminProduct(id: string) {
+    return useQuery({
+        queryKey: ['admin-product', id],
+        queryFn: async () => {
+            const { data } = await api.get(`/admin/products/${id}`);
+            return data.product as Product;
+        },
+        enabled: !!id,
     });
 }
 
@@ -228,6 +293,42 @@ export function useRemoveFromWishlist() {
     });
 }
 
+// Admin Orders hooks
+export function useAdminOrders() {
+    return useQuery({
+        queryKey: ['admin-orders'],
+        queryFn: async () => {
+            const { data } = await api.get('/admin/orders');
+            return data.orders as Order[];
+        },
+    });
+}
+
+export function useUpdateOrderStatus() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, status }: { id: string; status: string }) => {
+            const { data } = await api.patch(`/admin/orders/${id}`, { status });
+            return data.order;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+            toast.success('Order status updated!');
+        },
+    });
+}
+
+export function useAdminCategory(id: string) {
+    return useQuery({
+        queryKey: ['admin-category', id],
+        queryFn: async () => {
+            const { data } = await api.get(`/admin/categories/${id}`);
+            return data.category as Category;
+        },
+        enabled: !!id,
+    });
+}
+
 // Categories hooks
 export function useCategories() {
     return useQuery({
@@ -235,6 +336,72 @@ export function useCategories() {
         queryFn: async () => {
             const { data } = await api.get('/categories');
             return data.categories as Category[];
+        },
+    });
+}
+
+export function useCreateCategory() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (categoryData: Partial<Category>) => {
+            const { data } = await api.post('/admin/categories', categoryData);
+            return data.category;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Category created successfully!');
+        },
+    });
+}
+
+export function useUpdateCategory() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, data: categoryData }: { id: string; data: Partial<Category> }) => {
+            const { data } = await api.patch(`/admin/categories/${id}`, categoryData);
+            return data.category;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Category updated successfully!');
+        },
+    });
+}
+
+export function useDeleteCategory() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            await api.delete(`/admin/categories/${id}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Category deleted successfully!');
+        },
+    });
+}
+
+// Admin Users hooks
+export function useAdminUsers() {
+    return useQuery({
+        queryKey: ['admin-users'],
+        queryFn: async () => {
+            const { data } = await api.get('/admin/users');
+            return data.users as User[];
+        },
+    });
+}
+
+export function useUpdateUserRole() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, role }: { id: string; role: string }) => {
+            const { data } = await api.patch('/admin/users', { id, role });
+            return data.user;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+            toast.success('User role updated!');
         },
     });
 }
