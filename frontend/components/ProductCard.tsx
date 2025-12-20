@@ -2,10 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FiHeart, FiShoppingCart, FiEye } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
 import { useState } from 'react';
-import { useAddToCart, useAddToWishlist, useRemoveFromWishlist, useWishlist } from '@/hooks/useApi';
+import { useAddToCart, useAddToWishlist, useRemoveFromWishlist, useWishlist, useAuth } from '@/hooks/useApi';
 import type { Product } from '@/lib/types';
 
 interface ProductCardProps {
@@ -14,6 +15,8 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
     const [imageError, setImageError] = useState(false);
+    const { data: user } = useAuth();
+    const router = useRouter();
     const addToCart = useAddToCart();
     const addToWishlist = useAddToWishlist();
     const removeFromWishlist = useRemoveFromWishlist();
@@ -28,11 +31,19 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
+        if (!user) {
+            router.push('/auth/login');
+            return;
+        }
         addToCart.mutate({ productId: product.id, quantity: 1 });
     };
 
     const handleToggleWishlist = (e: React.MouseEvent) => {
         e.preventDefault();
+        if (!user) {
+            router.push('/auth/login');
+            return;
+        }
         if (isInWishlist) {
             removeFromWishlist.mutate(product.id);
         } else {
@@ -40,9 +51,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         }
     };
 
+    const placeholderImage = 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?q=80&w=1000&auto=format&fit=crop';
     const productImage = product.images && product.images.length > 0 && !imageError
         ? product.images[0]
-        : '/placeholder-jewelry.jpg';
+        : placeholderImage;
 
     return (
         <Link href={`/products/${product.slug}`} className="group block">

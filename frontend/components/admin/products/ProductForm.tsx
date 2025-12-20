@@ -3,8 +3,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useCategories, useCreateProduct, useUpdateProduct } from '@/hooks/useApi';
-import { FiSave, FiX, FiUpload, FiTrash2 } from 'react-icons/fi';
+import { useCategories, useCreateProduct, useUpdateProduct, useUploadImage } from '@/hooks/useApi';
+import { FiSave, FiX, FiUpload, FiTrash2, FiLoader } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Product } from '@/lib/types';
@@ -35,7 +35,9 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
     const { data: categories = [] } = useCategories();
     const createProduct = useCreateProduct();
     const updateProduct = useUpdateProduct();
+    const uploadImage = useUploadImage();
     const [images, setImages] = useState<string[]>(initialData?.images || []);
+    const [uploading, setUploading] = useState(false);
 
     const {
         register,
@@ -74,12 +76,35 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
         }
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Mock image upload - in a real app, you'd upload to Cloudinary/S3
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (files) {
-            const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
-            setImages((prev) => [...prev, ...newImages]);
+        if (!files) return;
+
+        setUploading(true);
+        try {
+            const uploadPromises = Array.from(files).map(async (file) => {
+                return new Promise<string>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = async () => {
+                        try {
+                            const base64 = reader.result as string;
+                            const url = await uploadImage.mutateAsync(base64);
+                            resolve(url);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            const uploadedUrls = await Promise.all(uploadPromises);
+            setImages((prev) => [...prev, ...uploadedUrls]);
+        } catch (error) {
+            console.error('Upload failed:', error);
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -178,9 +203,18 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
                                 </div>
                             ))}
                             <label className="border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors aspect-square">
-                                <FiUpload className="w-6 h-6 text-gray-400" />
-                                <span className="text-xs text-gray-500 font-medium">Add Image</span>
-                                <input type="file" multiple className="hidden" accept="image/*" onChange={handleImageChange} />
+                                <input type="file" multiple className="hidden" accept="image/*" onChange={handleImageChange} disabled={uploading} />
+                                {uploading ? (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <FiLoader className="w-6 h-6 text-amber-500 animate-spin" />
+                                        <span className="text-[10px] text-gray-500 font-medium">Uploading...</span>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <FiUpload className="w-6 h-6 text-gray-400" />
+                                        <span className="text-xs text-gray-500 font-medium">Add Image</span>
+                                    </>
+                                )}
                             </label>
                         </div>
                     </div>

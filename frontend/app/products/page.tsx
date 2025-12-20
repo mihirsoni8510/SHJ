@@ -45,7 +45,7 @@ function ProductsContent() {
             </div>
 
             <div className="container mx-auto px-4 max-w-7xl mt-12">
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-8 p-8">
                     {/* Sidebar Filters */}
                     <aside className="w-full lg:w-64 space-y-8">
                         <div>

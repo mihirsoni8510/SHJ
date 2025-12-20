@@ -45,6 +45,7 @@ import {
     getAdminCategoryAction,
     getAdminProductsAction
 } from '@/app/actions/admin';
+import { uploadImageAction } from '@/app/actions/upload';
 
 // Auth hooks
 export function useAuth() {
@@ -240,6 +241,16 @@ export function useAdminProduct(id: string) {
             return result.product as Product;
         },
         enabled: !!id,
+    });
+}
+
+export function useUploadImage() {
+    return useMutation({
+        mutationFn: async (base64: string) => {
+            const result = await uploadImageAction(base64);
+            if (result.error) throw new Error(result.error);
+            return result.url as string;
+        },
     });
 }
 

@@ -3,8 +3,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useCreateCategory, useUpdateCategory } from '@/hooks/useApi';
-import { FiSave, FiX, FiUpload, FiTrash2 } from 'react-icons/fi';
+import { useCreateCategory, useUpdateCategory, useUploadImage } from '@/hooks/useApi';
+import { FiSave, FiX, FiUpload, FiTrash2, FiLoader } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Category } from '@/lib/types';
@@ -27,7 +27,9 @@ export default function CategoryForm({ initialData, isEditing = false }: Categor
     const router = useRouter();
     const createCategory = useCreateCategory();
     const updateCategory = useUpdateCategory();
+    const uploadImage = useUploadImage();
     const [image, setImage] = useState<string | null>(initialData?.image || null);
+    const [uploading, setUploading] = useState(false);
 
     const {
         register,
@@ -57,10 +59,27 @@ export default function CategoryForm({ initialData, isEditing = false }: Categor
         }
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setImage(URL.createObjectURL(file));
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                try {
+                    const base64 = reader.result as string;
+                    const url = await uploadImage.mutateAsync(base64);
+                    setImage(url);
+                } catch (err) {
+                    console.error('Upload error:', err);
+                } finally {
+                    setUploading(false);
+                }
+            };
+            reader.readAsDataURL(file);
+        } catch (error) {
+            setUploading(false);
         }
     };
 
@@ -90,9 +109,18 @@ export default function CategoryForm({ initialData, isEditing = false }: Categor
                                 </>
                             ) : (
                                 <label className="flex flex-col items-center justify-center h-full cursor-pointer hover:bg-gray-50 transition-colors">
-                                    <FiUpload className="w-8 h-8 text-gray-300 mb-2" />
-                                    <span className="text-xs text-gray-400 font-medium text-center px-4">Upload Banner Image</span>
-                                    <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                                    {uploading ? (
+                                        <>
+                                            <FiLoader className="w-8 h-8 text-amber-500 animate-spin mb-2" />
+                                            <span className="text-xs text-gray-400 font-medium">Uploading...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FiUpload className="w-8 h-8 text-gray-300 mb-2" />
+                                            <span className="text-xs text-gray-400 font-medium text-center px-4">Upload Banner Image</span>
+                                        </>
+                                    )}
+                                    <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} disabled={uploading} />
                                 </label>
                             )}
                         </div>
