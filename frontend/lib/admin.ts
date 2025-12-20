@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function isAdmin() {
     const user = await getCurrentUser();
-    return user?.role === 'admin';
+    return user?.role.toLowerCase() === 'admin';
 }
 
 export async function adminOnly(handler: () => Promise<NextResponse>) {

@@ -32,7 +32,7 @@ export default function LoginPage() {
     const onSubmit = async (data: LoginForm) => {
         try {
             const res = await login.mutateAsync(data);
-            if (res.user.role === 'admin') {
+            if (res?.user?.role?.toLowerCase() === 'admin') {
                 router.push('/admin');
             } else {
                 router.push('/');

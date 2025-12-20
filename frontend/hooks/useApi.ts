@@ -1,24 +1,58 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import type { User, Product, CartItem, WishlistItem, Category, Order } from '@/lib/types';
 
-const api = axios.create({
-    baseURL: '/api',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+// Import server actions
+import {
+    loginAction,
+    registerAction,
+    logoutAction,
+    getMeAction,
+    updateProfileAction
+} from '@/app/actions/auth';
+import {
+    getProductsAction,
+    getProductBySlugAction,
+    createProductAction,
+    updateProductAction,
+    deleteProductAction
+} from '@/app/actions/products';
+import {
+    getCategoriesAction,
+    createCategoryAction,
+    updateCategoryAction,
+    deleteCategoryAction
+} from '@/app/actions/categories';
+import {
+    getCartAction,
+    addToCartAction,
+    updateCartAction,
+    removeFromCartAction
+} from '@/app/actions/cart';
+import {
+    getWishlistAction,
+    addToWishlistAction,
+    removeFromWishlistAction
+} from '@/app/actions/wishlist';
+import {
+    getAdminOrdersAction,
+    updateOrderStatusAction,
+    getAdminUsersAction,
+    updateUserRoleAction,
+    getAdminProductAction,
+    getAdminCategoryAction,
+    getAdminProductsAction
+} from '@/app/actions/admin';
 
 // Auth hooks
 export function useAuth() {
     return useQuery({
         queryKey: ['user'],
         queryFn: async () => {
-            const { data } = await api.get('/auth/me');
-            return data.user as User | null;
+            const result = await getMeAction();
+            return result.user as User | null;
         },
     });
 }
@@ -28,15 +62,16 @@ export function useLogin() {
 
     return useMutation({
         mutationFn: async (credentials: { email: string; password: string }) => {
-            const { data } = await api.post('/auth/login', credentials);
-            return data;
+            const result = await loginAction(credentials);
+            if (result.error) throw new Error(result.error);
+            return result;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] });
             toast.success('Logged in successfully!');
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || 'Login failed');
+            toast.error(error.message || 'Login failed');
         },
     });
 }
@@ -51,15 +86,16 @@ export function useRegister() {
             name: string;
             phone?: string;
         }) => {
-            const { data } = await api.post('/auth/register', userData);
-            return data;
+            const result = await registerAction(userData);
+            if (result.error) throw new Error(result.error);
+            return result;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] });
             toast.success('Account created successfully!');
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || 'Registration failed');
+            toast.error(error.message || 'Registration failed');
         },
     });
 }
@@ -69,7 +105,7 @@ export function useLogout() {
 
     return useMutation({
         mutationFn: async () => {
-            await api.post('/auth/logout');
+            await logoutAction();
         },
         onSuccess: () => {
             queryClient.setQueryData(['user'], null);
@@ -84,15 +120,16 @@ export function useUpdateProfile() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (userData: { name: string; phone?: string }) => {
-            const { data } = await api.patch('/auth/me', userData);
-            return data.user;
+            const result = await updateProfileAction(userData);
+            if (result.error) throw new Error(result.error);
+            return result.user;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] });
             toast.success('Profile updated successfully!');
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || 'Failed to update profile');
+            toast.error(error.message || 'Failed to update profile');
         },
     });
 }
@@ -110,17 +147,8 @@ export function useProducts(filters?: {
     return useQuery({
         queryKey: ['products', filters],
         queryFn: async () => {
-            const params = new URLSearchParams();
-            if (filters?.category) params.append('category', filters.category);
-            if (filters?.search) params.append('search', filters.search);
-            if (filters?.metal) params.append('metal', filters.metal);
-            if (filters?.minPrice) params.append('minPrice', filters.minPrice.toString());
-            if (filters?.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
-            if (filters?.page) params.append('page', filters.page.toString());
-            if (filters?.limit) params.append('limit', filters.limit.toString());
-
-            const { data } = await api.get(`/products?${params.toString()}`);
-            return data as { products: Product[]; pagination: any };
+            const result = await getProductsAction(filters);
+            return result as { products: Product[]; pagination: any };
         },
     });
 }
@@ -129,8 +157,8 @@ export function useAdminProducts() {
     return useQuery({
         queryKey: ['admin-products'],
         queryFn: async () => {
-            const { data } = await api.get('/admin/products');
-            return data.products as Product[];
+            const result = await getAdminProductsAction();
+            return result.products as Product[];
         },
     });
 }
@@ -139,13 +167,17 @@ export function useCreateProduct() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (productData: Partial<Product>) => {
-            const { data } = await api.post('/admin/products', productData);
-            return data.product;
+            const result = await createProductAction(productData);
+            if (result.error) throw new Error(result.error);
+            return result.product;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-products'] });
             queryClient.invalidateQueries({ queryKey: ['products'] });
             toast.success('Product created successfully!');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to create product');
         },
     });
 }
@@ -154,13 +186,17 @@ export function useUpdateProduct() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({ id, data: productData }: { id: string; data: Partial<Product> }) => {
-            const { data } = await api.patch(`/admin/products/${id}`, productData);
-            return data.product;
+            const result = await updateProductAction(id, productData);
+            if (result.error) throw new Error(result.error);
+            return result.product;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-products'] });
             queryClient.invalidateQueries({ queryKey: ['products'] });
             toast.success('Product updated successfully!');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to update product');
         },
     });
 }
@@ -169,12 +205,16 @@ export function useDeleteProduct() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            await api.delete(`/admin/products/${id}`);
+            const result = await deleteProductAction(id);
+            if (result.error) throw new Error(result.error);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-products'] });
             queryClient.invalidateQueries({ queryKey: ['products'] });
             toast.success('Product deleted successfully!');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to delete product');
         },
     });
 }
@@ -183,8 +223,9 @@ export function useProduct(slug: string) {
     return useQuery({
         queryKey: ['product', slug],
         queryFn: async () => {
-            const { data } = await api.get(`/products/${slug}`);
-            return data.product as Product;
+            const result = await getProductBySlugAction(slug);
+            if (result.error) throw new Error(result.error);
+            return result.product as Product;
         },
         enabled: !!slug,
     });
@@ -194,8 +235,9 @@ export function useAdminProduct(id: string) {
     return useQuery({
         queryKey: ['admin-product', id],
         queryFn: async () => {
-            const { data } = await api.get(`/admin/products/${id}`);
-            return data.product as Product;
+            const result = await getAdminProductAction(id);
+            if (result.error) throw new Error(result.error);
+            return result.product as Product;
         },
         enabled: !!id,
     });
@@ -206,8 +248,8 @@ export function useCart() {
     return useQuery({
         queryKey: ['cart'],
         queryFn: async () => {
-            const { data } = await api.get('/cart');
-            return data.cartItems as CartItem[];
+            const result = await getCartAction();
+            return result.cartItems as CartItem[];
         },
     });
 }
@@ -217,15 +259,16 @@ export function useAddToCart() {
 
     return useMutation({
         mutationFn: async ({ productId, quantity = 1 }: { productId: string; quantity?: number }) => {
-            const { data } = await api.post('/cart', { productId, quantity });
-            return data;
+            const result = await addToCartAction(productId, quantity);
+            if (result.error) throw new Error(result.error);
+            return result;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['cart'] });
             toast.success('Added to cart!');
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || 'Failed to add to cart');
+            toast.error(error.message || 'Failed to add to cart');
         },
     });
 }
@@ -235,14 +278,15 @@ export function useUpdateCart() {
 
     return useMutation({
         mutationFn: async ({ productId, quantity }: { productId: string; quantity: number }) => {
-            const { data } = await api.patch('/cart', { productId, quantity });
-            return data;
+            const result = await updateCartAction(productId, quantity);
+            if (result.error) throw new Error(result.error);
+            return result;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['cart'] });
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || 'Failed to update cart');
+            toast.error(error.message || 'Failed to update cart');
         },
     });
 }
@@ -252,14 +296,15 @@ export function useRemoveFromCart() {
 
     return useMutation({
         mutationFn: async (productId: string) => {
-            await api.delete(`/cart?productId=${productId}`);
+            const result = await removeFromCartAction(productId);
+            if (result.error) throw new Error(result.error);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['cart'] });
             toast.success('Removed from cart');
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || 'Failed to remove from cart');
+            toast.error(error.message || 'Failed to remove from cart');
         },
     });
 }
@@ -269,8 +314,8 @@ export function useWishlist() {
     return useQuery({
         queryKey: ['wishlist'],
         queryFn: async () => {
-            const { data } = await api.get('/wishlist');
-            return data.wishlistItems as WishlistItem[];
+            const result = await getWishlistAction();
+            return result.wishlistItems as WishlistItem[];
         },
     });
 }
@@ -280,15 +325,16 @@ export function useAddToWishlist() {
 
     return useMutation({
         mutationFn: async (productId: string) => {
-            const { data } = await api.post('/wishlist', { productId });
-            return data;
+            const result = await addToWishlistAction(productId);
+            if (result.error) throw new Error(result.error);
+            return result;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['wishlist'] });
             toast.success('Added to wishlist!');
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || 'Failed to add to wishlist');
+            toast.error(error.message || 'Failed to add to wishlist');
         },
     });
 }
@@ -298,14 +344,15 @@ export function useRemoveFromWishlist() {
 
     return useMutation({
         mutationFn: async (productId: string) => {
-            await api.delete(`/wishlist?productId=${productId}`);
+            const result = await removeFromWishlistAction(productId);
+            if (result.error) throw new Error(result.error);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['wishlist'] });
             toast.success('Removed from wishlist');
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || 'Failed to remove from wishlist');
+            toast.error(error.message || 'Failed to remove from wishlist');
         },
     });
 }
@@ -315,8 +362,9 @@ export function useAdminOrders() {
     return useQuery({
         queryKey: ['admin-orders'],
         queryFn: async () => {
-            const { data } = await api.get('/admin/orders');
-            return data.orders as Order[];
+            const result = await getAdminOrdersAction();
+            if (result.error) throw new Error(result.error);
+            return result.orders as Order[];
         },
     });
 }
@@ -325,12 +373,16 @@ export function useUpdateOrderStatus() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({ id, status }: { id: string; status: string }) => {
-            const { data } = await api.patch(`/admin/orders/${id}`, { status });
-            return data.order;
+            const result = await updateOrderStatusAction(id, status);
+            if (result.error) throw new Error(result.error);
+            return result.order;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
             toast.success('Order status updated!');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to update order status');
         },
     });
 }
@@ -339,8 +391,9 @@ export function useAdminCategory(id: string) {
     return useQuery({
         queryKey: ['admin-category', id],
         queryFn: async () => {
-            const { data } = await api.get(`/admin/categories/${id}`);
-            return data.category as Category;
+            const result = await getAdminCategoryAction(id);
+            if (result.error) throw new Error(result.error);
+            return result.category as Category;
         },
         enabled: !!id,
     });
@@ -351,8 +404,8 @@ export function useCategories() {
     return useQuery({
         queryKey: ['categories'],
         queryFn: async () => {
-            const { data } = await api.get('/categories');
-            return data.categories as Category[];
+            const result = await getCategoriesAction();
+            return result.categories as Category[];
         },
     });
 }
@@ -361,12 +414,16 @@ export function useCreateCategory() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (categoryData: Partial<Category>) => {
-            const { data } = await api.post('/admin/categories', categoryData);
-            return data.category;
+            const result = await createCategoryAction(categoryData);
+            if (result.error) throw new Error(result.error);
+            return result.category;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Category created successfully!');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to create category');
         },
     });
 }
@@ -375,12 +432,16 @@ export function useUpdateCategory() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({ id, data: categoryData }: { id: string; data: Partial<Category> }) => {
-            const { data } = await api.patch(`/admin/categories/${id}`, categoryData);
-            return data.category;
+            const result = await updateCategoryAction(id, categoryData);
+            if (result.error) throw new Error(result.error);
+            return result.category;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Category updated successfully!');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to update category');
         },
     });
 }
@@ -389,11 +450,15 @@ export function useDeleteCategory() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            await api.delete(`/admin/categories/${id}`);
+            const result = await deleteCategoryAction(id);
+            if (result.error) throw new Error(result.error);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Category deleted successfully!');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to delete category');
         },
     });
 }
@@ -403,8 +468,9 @@ export function useAdminUsers() {
     return useQuery({
         queryKey: ['admin-users'],
         queryFn: async () => {
-            const { data } = await api.get('/admin/users');
-            return data.users as User[];
+            const result = await getAdminUsersAction();
+            if (result.error) throw new Error(result.error);
+            return result.users as User[];
         },
     });
 }
@@ -413,12 +479,16 @@ export function useUpdateUserRole() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({ id, role }: { id: string; role: string }) => {
-            const { data } = await api.patch('/admin/users', { id, role });
-            return data.user;
+            const result = await updateUserRoleAction(id, role);
+            if (result.error) throw new Error(result.error);
+            return result.user;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-users'] });
             toast.success('User role updated!');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to update user role');
         },
     });
 }

@@ -93,7 +93,7 @@ function ProductsContent() {
 
                         <div className="p-6 bg-amber-50 rounded-2xl border border-amber-100">
                             <h4 className="font-bold text-amber-900 mb-2">Need Help?</h4>
-                            <p className="text-sm text-amber-800 mb-4">Can't find what you're looking for? Our experts are here to help you.</p>
+                            <p className="text-sm text-amber-800 mb-4">Can&apos;t find what you&apos;re looking for? Our experts are here to help you.</p>
                             <button className="w-full bg-white text-amber-700 font-bold py-2 rounded-lg shadow-sm hover:shadow-md transition-all">
                                 Contact Expert
                             </button>
@@ -139,7 +139,7 @@ function ProductsContent() {
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900 mb-2">No products found</h3>
                                 <p className="text-gray-500 mb-8 max-w-md mx-auto">
-                                    We couldn't find any products in this category. Try adjusting your filters or check back later!
+                                    We couldn&apos;t find any products in this category. Try adjusting your filters or check back later!
                                 </p>
                                 <Link
                                     href="/products"
