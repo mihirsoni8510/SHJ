@@ -27,9 +27,19 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ category }, { status: 201 });
     } catch (error: any) {
         console.error('Create category error:', error);
+
+        // P2002 is Prisma's error code for unique constraint violation
         if (error.code === 'P2002') {
-            return NextResponse.json({ error: 'Category with this name or slug already exists' }, { status: 400 });
+            const field = error.meta?.target?.[0] || 'name or slug';
+            return NextResponse.json(
+                { error: `A category with this ${field} already exists. Please use a unique ${field}.` },
+                { status: 400 }
+            );
         }
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
     }
 }

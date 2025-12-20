@@ -1,10 +1,11 @@
 'use client';
 
 import AdminSidebar from '@/components/admin/Sidebar';
-import { FiBell, FiSearch, FiUser } from 'react-icons/fi';
+import { FiBell, FiSearch, FiMenu, FiX } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useApi';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function AdminLayout({
     children,
@@ -13,10 +14,13 @@ export default function AdminLayout({
 }) {
     const { data: user, isLoading } = useAuth();
     const router = useRouter();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     useEffect(() => {
-        if (!isLoading && (!user || user.role !== 'admin')) {
-            router.push('/');
+        if (!isLoading) {
+            if (!user || user.role.toLowerCase() !== 'admin') {
+                router.push('/');
+            }
         }
     }, [user, isLoading, router]);
 
@@ -28,19 +32,27 @@ export default function AdminLayout({
         );
     }
 
-    if (!user || user.role !== 'admin') {
+    if (!user || user.role.toLowerCase() !== 'admin') {
         return null;
     }
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            <AdminSidebar />
+        <div className="flex min-h-screen bg-gray-50 relative">
+            <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 {/* Admin Header */}
                 <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-10">
-                    <div className="flex items-center gap-4 w-96">
-                        <div className="relative w-full">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                            aria-label="Toggle Sidebar"
+                        >
+                            {isSidebarOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
+                        </button>
+
+                        <div className="relative hidden md:block w-72 lg:w-96">
                             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
@@ -56,15 +68,15 @@ export default function AdminLayout({
                             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                         </button>
 
-                        <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-                            <div className="text-right">
-                                <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
+                        <Link href="/profile" className="flex items-center gap-3 pl-4 border-l border-gray-200 group">
+                            <div className="text-right hidden sm:block">
+                                <p className="text-sm font-semibold text-gray-900 group-hover:text-amber-600 transition-colors">{user?.name}</p>
                                 <p className="text-xs text-gray-500 capitalize">{user?.role} Account</p>
                             </div>
-                            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold">
+                            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold group-hover:bg-amber-200 transition-colors">
                                 {user?.name?.charAt(0).toUpperCase()}
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 </header>
 

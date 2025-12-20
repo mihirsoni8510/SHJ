@@ -64,9 +64,8 @@ export default function HomePage() {
           {/* Category Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
             {categories.map((category) => (
-              <Link
+              <div
                 key={category.slug}
-                href={`/products?category=${category.slug}`}
                 className="group relative w-full max-w-[380px] aspect-[4/5] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
               >
                 {/* Gradient Overlay */}
@@ -88,12 +87,12 @@ export default function HomePage() {
                   >
                     {category.name}
                   </h3>
-                  <div className="flex items-center text-[var(--color-primary,#D4AF37)] font-semibold group-hover:translate-x-2 transition-transform">
+                  {/* <div className="flex items-center text-[var(--color-primary,#D4AF37)] font-semibold group-hover:translate-x-2 transition-transform">
                     Explore Collection
                     <FiArrowRight className="ml-2" />
-                  </div>
+                  </div> */}
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>

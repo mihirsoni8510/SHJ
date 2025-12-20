@@ -80,6 +80,23 @@ export function useLogout() {
     });
 }
 
+export function useUpdateProfile() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (userData: { name: string; phone?: string }) => {
+            const { data } = await api.patch('/auth/me', userData);
+            return data.user;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['user'] });
+            toast.success('Profile updated successfully!');
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.error || 'Failed to update profile');
+        },
+    });
+}
+
 // Products hooks
 export function useProducts(filters?: {
     category?: string;
