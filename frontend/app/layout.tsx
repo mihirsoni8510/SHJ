@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Providers from "@/components/providers";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/ui/Header";
+import Footer from "@/components/ui/Footer";
 
 export const metadata: Metadata = {
   title: "Shree Harikrupa Jewellers - Exquisite Jewelry Collection",

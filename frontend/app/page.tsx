@@ -1,70 +1,94 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import { useProducts } from '@/hooks/useApi';
-import { FiArrowRight } from 'react-icons/fi';
+import { FiArrowRight, FiPenTool } from 'react-icons/fi';
 
 export default function HomePage() {
   const router = useRouter();
   const { data, isLoading } = useProducts({ limit: 8 });
 
   const categories = [
-    { name: 'Gold Jewelry', slug: 'gold', image: '/images/gold.jpg' },
-    { name: 'Diamond Jewelry', slug: 'diamond', image: '/images/diamond.jpg' },
-    { name: 'Silver Jewelry', slug: 'silver', image: '/images/silver.jpg' },
+    { name: 'Gold Jewelry', slug: 'gold', image: '/home/gold.webp' },
+    { name: 'Diamond Jewelry', slug: 'diamond', image: '/home/diamond.jpg' },
+    { name: 'Silver Jewelry', slug: 'silver', image: '/home/silver.jpg' },
   ];
 
   return (
     <div>
       {/* Hero Section */}
-
-      <div className="relative h-[600px] flex items-center justify-center bg-red-500 ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-white mb-4">
-            Exquisite Jewelry Collection
-          </h2>
-          <p className="text-xl mb-8 max-w-xl" style={{ fontFamily: 'var(--font-heading)' }}>
-            Discover timeless elegance with our handcrafted gold, diamond, and silver jewelry
-          </p>
-          <button
-            onClick={() => router.push('/products')}
-            className="btn btn-primary bg-amber-700  text-white px-8 py-3 rounded-md transition-colors "
-          >
-            Shop Now
-            <FiArrowRight className="w-5 h-5" />
-          </button>
+      <section>
+        <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
+          <Image
+            src="/home/hero-bg.jpg"
+            alt="Exquisite Jewelry Collection"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+            <h2 className="text-white text-5xl md:text-7xl font-bold mb-6 tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+              Exquisite jewellery Collection
+            </h2>
+            <p className="text-gray-100 text-xl md:text-2xl mb-10 max-w-2xl font-light">
+              Discover timeless elegance with our handcrafted gold, diamond, and silver jewelry
+            </p>
+            <button
+              onClick={() => router.push('/products')}
+              className="bg-[#d4a574]  text-white px-10 py-4 rounded-full transition-all transform hover:scale-105 shadow-xl flex items-center gap-3 font-semibold text-lg"
+            >
+              Shop Now
+              <FiArrowRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-      </div>
-
+      </section>
 
       {/* Shop by Category */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-20 bg-white">
+        <div className="container">
+          {/* Heading */}
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
               Shop by Category
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-base sm:text-lg">
               Explore our curated collections
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Category Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
             {categories.map((category) => (
               <Link
                 key={category.slug}
                 href={`/products?category=${category.slug}`}
-                className="group relative aspect-[4/5] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
+                className="group relative w-full max-w-[380px] aspect-[4/5] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10"></div>
-                <div className="absolute inset-0 bg-gray-300 animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-8 z-20 flex flex-col items-center text-center">
-                  <h3 className="text-white text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
+
+                {/* Image */}
+                <Image
+                  src={category.image}
+                  alt={category.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+
+                {/* Text */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-20">
+                  <h3
+                    className="text-white text-2xl sm:text-3xl font-bold mb-2"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
                     {category.name}
                   </h3>
-                  <div className="flex items-center justify-center text-[var(--color-primary,#D4AF37)] font-semibold group-hover:translate-x-2 transition-transform">
+                  <div className="flex items-center text-[var(--color-primary,#D4AF37)] font-semibold group-hover:translate-x-2 transition-transform">
                     Explore Collection
                     <FiArrowRight className="ml-2" />
                   </div>
@@ -74,6 +98,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
 
       {/* Featured Products */}
       <section className="section bg-amber-50/30">
@@ -118,34 +143,27 @@ export default function HomePage() {
       {/* Trust Badges */}
       <section className="section bg-white">
         <div className="container mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-[var(--color-primary,#D4AF37)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">✓</span>
               </div>
               <h3 className="font-semibold text-lg mb-2">Certified Jewelry</h3>
-              <p className="text-gray-600 text-sm">100% hallmarked & certified</p>
+              <p className="text-gray-600 text-sm">All our jewelry comes with BIS Hallmark certification</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-[var(--color-primary,#D4AF37)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🔒</span>
+                <span className="text-3xl"><FiPenTool /></span>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Secure Payment</h3>
-              <p className="text-gray-600 text-sm">Safe & secure transactions</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[var(--color-primary,#D4AF37)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🚚</span>
-              </div>
-              <h3 className="font-semibold text-lg mb-2">Free Shipping</h3>
-              <p className="text-gray-600 text-sm">On orders above ₹25,000</p>
+              <h3 className="font-semibold text-lg mb-2">Custom Design</h3>
+              <p className="text-gray-600 text-sm">Create your dream jewelry with our expert designers</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-[var(--color-primary,#D4AF37)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">↩</span>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Easy Returns</h3>
-              <p className="text-gray-600 text-sm">15-day return policy</p>
+              <h3 className="font-semibold text-lg mb-2">Exchange Policy</h3>
+              <p className="text-gray-600 text-sm">Lifetime exchange on all gold jewelry purchases</p>
             </div>
           </div>
         </div>

@@ -7,13 +7,13 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-gray-900 text-gray-300">
+        <footer className="bg-gray-900 text-gray-300 p-4">
             <div className="container mx-auto max-w-7xl py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* About */}
                     <div>
-                        <h3 className="text-white text-xl font-bold mb-6" style={{ fontFamily: 'var(--font-heading)' }}>
-                            Shree Jewellers
+                        <h3 className="text-white text-xl font-bold mb-6">
+                            Shree Harikrupa Jewellers
                         </h3>
                         <p className="text-sm leading-relaxed mb-6">
                             Discover timeless elegance with our handcrafted gold, diamond, and silver jewelry.
@@ -81,14 +81,14 @@ export default function Footer() {
                     <div>
                         <h4 className="text-white font-semibold mb-6">Customer Service</h4>
                         <ul className="space-y-3">
-                            <li>
+                            {/* <li>
                                 <Link href="/shipping" className="hover:text-[var(--color-primary,#D4AF37)] transition-colors text-sm">
                                     Shipping Information
                                 </Link>
-                            </li>
+                            </li> */}
                             <li>
                                 <Link href="/returns" className="hover:text-[var(--color-primary,#D4AF37)] transition-colors text-sm">
-                                    Return Policy
+                                    Exchange Policy
                                 </Link>
                             </li>
                             <li>
@@ -107,7 +107,7 @@ export default function Footer() {
                     {/* Contact Info */}
                     <div>
                         <h4 className="text-white font-semibold mb-6">Contact Info</h4>
-                        <ul className="space-y-4">
+                        <ul className="space-y-4 mb-2">
                             <li className="flex items-start gap-3 text-sm">
                                 <FiMapPin className="w-5 h-5 text-[var(--color-primary,#D4AF37)] flex-shrink-0 mt-0.5" />
                                 <span>123 Jewelry Street, Mumbai, Maharashtra 400001</span>
@@ -120,8 +120,8 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3 text-sm">
                                 <FiMail className="w-5 h-5 text-[var(--color-primary,#D4AF37)] flex-shrink-0" />
-                                <a href="mailto:info@shreejewellers.com" className="hover:text-[var(--color-primary,#D4AF37)] transition-colors">
-                                    info@shreejewellers.com
+                                <a href="mailto:info@shreeharikrupa.com" className="hover:text-[var(--color-primary,#D4AF37)] transition-colors">
+                                    info@shreeharikrupajewellers.com
                                 </a>
                             </li>
                         </ul>
@@ -132,7 +132,7 @@ export default function Footer() {
             {/* Bottom Bar */}
             <div className="border-t border-gray-800">
                 <div className="container mx-auto max-w-7xl py-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex flex-col md:flex-row justify-between items-center mt-2 gap-4">
                         <p className="text-sm text-gray-400">
                             © {currentYear} Shree Harikrupa Jewellers. All rights reserved.
                         </p>

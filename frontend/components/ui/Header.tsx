@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const router = useRouter();
 
@@ -15,6 +17,15 @@ export default function Header() {
     const { data: cartItems = [] } = useCart();
     const { data: wishlistItems = [] } = useWishlist();
     const logout = useLogout();
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
+            setIsSearchOpen(false);
+            setSearchQuery('');
+        }
+    };
 
 
 
@@ -60,7 +71,7 @@ export default function Header() {
                     <div className="flex items-center justify-between gap-3 h-16">
                         {/* Search */}
                         <button
-                            onClick={() => router.push('/search')}
+                            onClick={() => setIsSearchOpen(true)}
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                             aria-label="Search"
                         >
@@ -189,7 +200,62 @@ export default function Header() {
                 .animate-fadeIn {
                   animation: fadeIn 0.3s ease-out;
                 }
+                @keyframes slideDown {
+                  from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                  }
+                  to {
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+                }
+                .animate-slideDown {
+                  animation: slideDown 0.3s ease-out;
+                }
             `}} />
+
+            {/* Search Overlay */}
+            {isSearchOpen && (
+                <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+                    <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden animate-slideDown">
+                        <div className="p-6">
+                            <form onSubmit={handleSearch} className="relative flex items-center gap-4">
+                                <FiSearch className="w-6 h-6 text-gray-400" />
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    placeholder="Search for jewelry..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="flex-1 bg-transparent text-xl outline-none text-gray-800 placeholder:text-gray-400"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setIsSearchOpen(false)}
+                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
+                                >
+                                    <FiX className="w-6 h-6" />
+                                </button>
+                            </form>
+                            <div className="mt-4 border-t pt-6">
+                                <div className="text-center text-gray-500">
+                                    {searchQuery ? (
+                                        <p>Press Enter to search for &quot;{searchQuery}&quot;</p>
+                                    ) : (
+                                        <p>Start typing to search...</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Click outside to close */}
+                    <div
+                        className="absolute inset-0 -z-10"
+                        onClick={() => setIsSearchOpen(false)}
+                    />
+                </div>
+            )}
         </div>
     );
 }
