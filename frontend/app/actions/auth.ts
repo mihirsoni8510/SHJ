@@ -8,7 +8,8 @@ import {
     generateToken,
     setAuthCookie,
     removeAuthCookie,
-    getCurrentUser
+    getCurrentUser,
+    getGuestId
 } from '@/lib/auth';
 
 export async function loginAction(formData: any) {
@@ -31,6 +32,37 @@ export async function loginAction(formData: any) {
         });
 
         await setAuthCookie(token);
+
+        // Merge guest items
+        const cookieStore = await cookies();
+        const guestId = cookieStore.get('guestId')?.value;
+        if (guestId) {
+            // Merge Cart
+            await (prisma.cartItem as any).updateMany({
+                where: { guestId },
+                data: { userId: user.id, guestId: null },
+            });
+
+            // Merge Wishlist (avoid duplicates)
+            const guestWishlist = await (prisma.wishlistItem as any).findMany({
+                where: { guestId },
+            });
+
+            for (const item of guestWishlist) {
+                const existing = await (prisma.wishlistItem as any).findFirst({
+                    where: { userId: user.id, productId: item.productId },
+                });
+                if (!existing) {
+                    await (prisma.wishlistItem as any).update({
+                        where: { id: item.id },
+                        data: { userId: user.id, guestId: null },
+                    });
+                } else {
+                    await (prisma.wishlistItem as any).delete({ where: { id: item.id } });
+                }
+            }
+            cookieStore.delete('guestId');
+        }
 
         return {
             success: true,
@@ -78,6 +110,35 @@ export async function registerAction(formData: any) {
         });
 
         await setAuthCookie(token);
+
+        // Merge guest items
+        const cookieStore = await cookies();
+        const guestId = cookieStore.get('guestId')?.value;
+        if (guestId) {
+            await (prisma.cartItem as any).updateMany({
+                where: { guestId },
+                data: { userId: user.id, guestId: null },
+            });
+
+            const guestWishlist = await (prisma.wishlistItem as any).findMany({
+                where: { guestId },
+            });
+
+            for (const item of guestWishlist) {
+                const existing = await (prisma.wishlistItem as any).findFirst({
+                    where: { userId: user.id, productId: item.productId },
+                });
+                if (!existing) {
+                    await (prisma.wishlistItem as any).update({
+                        where: { id: item.id },
+                        data: { userId: user.id, guestId: null },
+                    });
+                } else {
+                    await (prisma.wishlistItem as any).delete({ where: { id: item.id } });
+                }
+            }
+            cookieStore.delete('guestId');
+        }
 
         return {
             success: true,

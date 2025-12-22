@@ -1,16 +1,16 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentUser, getGuestId } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
 export async function getCartAction() {
     try {
         const user = await getCurrentUser();
-        if (!user) return { cartItems: [] };
+        const guestId = !user ? await getGuestId() : null;
 
-        const cartItems = await prisma.cartItem.findMany({
-            where: { userId: user.id },
+        const cartItems = await (prisma.cartItem as any).findMany({
+            where: user ? { userId: user.id } : { guestId: guestId },
             include: { product: true },
         });
 
@@ -24,26 +24,21 @@ export async function getCartAction() {
 export async function addToCartAction(productId: string, quantity: number = 1) {
     try {
         const user = await getCurrentUser();
-        if (!user) return { error: 'Unauthorized' };
+        const guestId = !user ? await getGuestId() : null;
 
-        const existingItem = await prisma.cartItem.findUnique({
-            where: {
-                userId_productId: {
-                    userId: user.id,
-                    productId,
-                },
-            },
+        const existingItem = await (prisma.cartItem as any).findFirst({
+            where: user ? { userId: user.id, productId } : { guestId: guestId, productId },
         });
 
         if (existingItem) {
-            await prisma.cartItem.update({
+            await (prisma.cartItem as any).update({
                 where: { id: existingItem.id },
                 data: { quantity: existingItem.quantity + quantity },
             });
         } else {
-            await prisma.cartItem.create({
+            await (prisma.cartItem as any).create({
                 data: {
-                    userId: user.id,
+                    ...(user ? { userId: user.id } : { guestId: guestId }),
                     productId,
                     quantity,
                 },
@@ -61,25 +56,21 @@ export async function addToCartAction(productId: string, quantity: number = 1) {
 export async function updateCartAction(productId: string, quantity: number) {
     try {
         const user = await getCurrentUser();
-        if (!user) return { error: 'Unauthorized' };
+        const guestId = !user ? await getGuestId() : null;
+
+        const existingItem = await (prisma.cartItem as any).findFirst({
+            where: user ? { userId: user.id, productId } : { guestId: guestId, productId },
+        });
+
+        if (!existingItem) return { error: 'Item not found in cart' };
 
         if (quantity <= 0) {
-            await prisma.cartItem.delete({
-                where: {
-                    userId_productId: {
-                        userId: user.id,
-                        productId,
-                    },
-                },
+            await (prisma.cartItem as any).delete({
+                where: { id: existingItem.id },
             });
         } else {
-            await prisma.cartItem.update({
-                where: {
-                    userId_productId: {
-                        userId: user.id,
-                        productId,
-                    },
-                },
+            await (prisma.cartItem as any).update({
+                where: { id: existingItem.id },
                 data: { quantity },
             });
         }
@@ -95,16 +86,17 @@ export async function updateCartAction(productId: string, quantity: number) {
 export async function removeFromCartAction(productId: string) {
     try {
         const user = await getCurrentUser();
-        if (!user) return { error: 'Unauthorized' };
+        const guestId = !user ? await getGuestId() : null;
 
-        await prisma.cartItem.delete({
-            where: {
-                userId_productId: {
-                    userId: user.id,
-                    productId,
-                },
-            },
+        const existingItem = await (prisma.cartItem as any).findFirst({
+            where: user ? { userId: user.id, productId } : { guestId: guestId, productId },
         });
+
+        if (existingItem) {
+            await (prisma.cartItem as any).delete({
+                where: { id: existingItem.id },
+            });
+        }
 
         revalidatePath('/cart');
         return { success: true };

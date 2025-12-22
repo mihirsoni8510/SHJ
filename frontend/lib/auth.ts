@@ -55,3 +55,21 @@ export async function removeAuthCookie() {
     const cookieStore = await cookies();
     cookieStore.delete('token');
 }
+
+export async function getGuestId(): Promise<string> {
+    const cookieStore = await cookies();
+    let guestId = cookieStore.get('guestId')?.value;
+
+    if (!guestId) {
+        guestId = crypto.randomUUID();
+        cookieStore.set('guestId', guestId, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 30, // 30 days
+            path: '/',
+        });
+    }
+
+    return guestId;
+}

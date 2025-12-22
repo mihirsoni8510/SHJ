@@ -31,19 +31,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
-        if (!user) {
-            router.push('/auth/login');
-            return;
-        }
         addToCart.mutate({ productId: product.id, quantity: 1 });
     };
 
     const handleToggleWishlist = (e: React.MouseEvent) => {
         e.preventDefault();
-        if (!user) {
-            router.push('/auth/login');
-            return;
-        }
         if (isInWishlist) {
             removeFromWishlist.mutate(product.id);
         } else {
