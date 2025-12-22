@@ -165,8 +165,8 @@ export default function ProductDetailPage() {
                             <button
                                 onClick={handleToggleWishlist}
                                 className={`p-4 border rounded-xl transition-all shadow-sm ${isInWishlist
-                                        ? 'bg-amber-50 border-amber-500 text-amber-600'
-                                        : 'bg-white border-gray-200 text-gray-600 hover:border-amber-500 hover:text-amber-600'
+                                    ? 'bg-amber-50 border-amber-500 text-amber-600'
+                                    : 'bg-white border-gray-200 text-gray-600 hover:border-amber-500 hover:text-amber-600'
                                     }`}
                             >
                                 {isInWishlist ? <FaHeart className="w-6 h-6" /> : <FiHeart className="w-6 h-6" />}

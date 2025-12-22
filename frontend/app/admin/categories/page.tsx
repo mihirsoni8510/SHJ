@@ -23,7 +23,7 @@ export default function AdminCategoriesPage() {
                     <p className="text-gray-500">Organize your products into meaningful collections.</p>
                 </div>
                 <Link
-                    href="/admin/categories/new"
+                    href="/admin/categories/add"
                     className="btn btn-primary flex items-center gap-2 w-fit px-6 py-2.5"
                 >
                     <FiPlus />

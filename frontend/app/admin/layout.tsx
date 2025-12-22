@@ -14,7 +14,23 @@ export default function AdminLayout({
 }) {
     const { data: user, isLoading } = useAuth();
     const router = useRouter();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768) {
+                setIsSidebarOpen(true);
+            } else {
+                setIsSidebarOpen(false);
+            }
+        };
+
+        // Set initial state
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         if (!isLoading) {
@@ -81,7 +97,7 @@ export default function AdminLayout({
                 </header>
 
                 {/* Main Content Area */}
-                <main className="flex-1 overflow-y-auto p-8">
+                <main className="flex-1 overflow-y-auto p-4 md:p-8">
                     {children}
                 </main>
             </div>

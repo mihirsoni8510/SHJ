@@ -163,11 +163,11 @@ export default function CategoryForm({ initialData, isEditing = false }: Categor
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 pt-6 border-t font-semibold">
+                <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t font-semibold">
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="btn btn-primary flex-1 py-3 flex items-center justify-center gap-2"
+                        className="btn btn-primary w-full sm:flex-1 py-3 flex items-center justify-center gap-2 px-0"
                     >
                         <FiSave className="w-5 h-5" />
                         {isEditing ? 'Update Category' : 'Create Category'}
@@ -175,7 +175,7 @@ export default function CategoryForm({ initialData, isEditing = false }: Categor
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="btn btn-outline flex-1 py-3 flex items-center justify-center gap-2"
+                        className="btn btn-outline w-full sm:flex-1 py-3 flex items-center justify-center gap-2 px-0"
                     >
                         <FiX className="w-5 h-5" />
                         Cancel
