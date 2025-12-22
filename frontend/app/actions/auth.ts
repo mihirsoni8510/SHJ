@@ -2,6 +2,8 @@
 
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import crypto from 'crypto';
+import { sendPasswordResetEmail } from '@/lib/mail';
 import {
     hashPassword,
     verifyPassword,
@@ -224,8 +226,25 @@ export async function forgotPasswordAction(email: string) {
             return { success: true, message: 'If an account exists with that email, we have sent a reset link.' };
         }
 
-        // TODO: Generate reset token, save to DB, and send email
-        // console.log(`Reset link requested for: ${email}`);
+        // Generate reset token
+        const token = crypto.randomBytes(32).toString('hex');
+        const expires = new Date(Date.now() + 3600000); // 1 hour from now
+
+        // Save to DB (cleanup old tokens first)
+        await (prisma as any).passwordResetToken.deleteMany({
+            where: { userId: user.id },
+        });
+
+        await (prisma as any).passwordResetToken.create({
+            data: {
+                token,
+                expires,
+                userId: user.id,
+            },
+        });
+
+        // Send email
+        await sendPasswordResetEmail(email, token);
 
         return { success: true, message: 'If an account exists with that email, we have sent a reset link.' };
     } catch (error) {
@@ -234,10 +253,32 @@ export async function forgotPasswordAction(email: string) {
     }
 }
 
-export async function resetPasswordAction(data: any) {
+export async function resetPasswordAction(data: { token: string; password: string }) {
     try {
         const { token, password } = data;
-        // TODO: Verify token, find user, update password
+
+        // Find token and check expiration
+        const resetToken = await (prisma as any).passwordResetToken.findUnique({
+            where: { token },
+            include: { user: true },
+        });
+
+        if (!resetToken || resetToken.expires < new Date()) {
+            return { error: 'Invalid or expired reset token' };
+        }
+
+        // Update password
+        const hashedPassword = await hashPassword(password);
+        await prisma.user.update({
+            where: { id: resetToken.userId },
+            data: { password: hashedPassword },
+        });
+
+        // Delete used token
+        await (prisma as any).passwordResetToken.delete({
+            where: { id: resetToken.id },
+        });
+
         return { success: true, message: 'Password has been reset successfully.' };
     } catch (error) {
         console.error('Reset password action error:', error);
