@@ -67,7 +67,10 @@ export function useLogin() {
             if (result.error) throw new Error(result.error);
             return result;
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
+            if (data?.user) {
+                queryClient.setQueryData(['user'], data.user);
+            }
             queryClient.invalidateQueries({ queryKey: ['user'] });
             toast.success('Logged in successfully!');
         },

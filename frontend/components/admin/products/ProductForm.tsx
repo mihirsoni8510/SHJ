@@ -38,6 +38,7 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
     const uploadImage = useUploadImage();
     const [images, setImages] = useState<string[]>(initialData?.images || []);
     const [uploading, setUploading] = useState(false);
+    const [imageUrl, setImageUrl] = useState<string>('');
 
     const {
         register,
@@ -190,9 +191,9 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
                     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
                         <h2 className="text-lg font-bold text-gray-900 border-b pb-4">Media Gallary</h2>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {images.map((img, idx) => (
+                            {images.map((imageUrl, idx) => (
                                 <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-gray-100 group">
-                                    <Image src={img} alt={`Preview ${idx}`} fill className="object-cover" />
+                                    <Image src={imageUrl} alt={`Preview ${idx}`} fill className="object-cover" />
                                     <button
                                         type="button"
                                         onClick={() => removeImage(idx)}

@@ -24,7 +24,7 @@ function ProductsContent() {
     const activeCategory = categories.find(c => c.slug === categorySlug);
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-20">
+        <div className="bg-gray-50 min-h-screen">
             {/* Header / Breadcrumbs */}
             <div className="bg-white border-b border-gray-200 py-8">
                 <div className="container mx-auto px-4 max-w-7xl">

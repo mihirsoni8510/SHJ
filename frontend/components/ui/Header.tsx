@@ -10,6 +10,7 @@ export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
     const router = useRouter();
 
@@ -27,8 +28,6 @@ export default function Header() {
         }
     };
 
-
-
     const handleLogout = () => {
         logout.mutate();
         router.push('/');
@@ -43,147 +42,169 @@ export default function Header() {
     ];
 
     return (
-        <div className="flex items-center justify-between h-16">
-            <div className="container mx-5 max-w-7xl">
-                {/* Top Bar */}
-                <div className="flex items-center justify-between py-4 px-4">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center">
-                        <h1 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--font-heading)' }}>
-                            Shree Harikrupa Jewellers
-                        </h1>
+        <header className="relative bg-white z-40">
+            <div className="container mx-auto px-4 max-w-7xl h-16 flex items-center justify-between">
+                {/* Logo */}
+                <Link href="/" className="flex items-center">
+                    <h1 className="text-lg sm:text-xl md:text-3xl font-bold tracking-tight leading-none" style={{ fontFamily: 'var(--font-heading)' }}>
+                        Shree Harikrupa Jewellers
+                    </h1>
+                </Link>
+
+                {/* Desktop Navigation */}
+                <nav className="hidden lg:flex items-center gap-8">
+                    {navLinks.map((link) => (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            className="text-gray-700 hover:text-[var(--color-primary,#D4AF37)] font-medium transition-colors"
+                        >
+                            {link.label}
+                        </Link>
+                    ))}
+                </nav>
+
+                {/* Icons */}
+                <div className="flex items-center gap-2 md:gap-3">
+                    {/* Search */}
+                    <button
+                        onClick={() => setIsSearchOpen(true)}
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        aria-label="Search"
+                    >
+                        <FiSearch className="w-5 h-5" />
+                    </button>
+
+                    {/* Wishlist */}
+                    <Link
+                        href="/wishlist"
+                        className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        aria-label="Wishlist"
+                    >
+                        <FiHeart className="w-5 h-5" />
+                        {wishlistItems.length > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-[var(--color-primary,#D4AF37)] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                                {wishlistItems.length}
+                            </span>
+                        )}
                     </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center gap-8">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="text-gray-700 hover:text-[var(--color-primary,#D4AF37)] font-medium transition-colors"
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </nav>
+                    {/* Cart */}
+                    <Link
+                        href="/cart"
+                        className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        aria-label="Cart"
+                    >
+                        <FiShoppingCart className="w-5 h-5" />
+                        {cartItems.length > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-[var(--color-primary,#D4AF37)] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                                {cartItems.length}
+                            </span>
+                        )}
+                    </Link>
 
-                    {/* Icons */}
-                    <div className="flex items-center justify-between gap-3 h-16">
-                        {/* Search */}
-                        <button
-                            onClick={() => setIsSearchOpen(true)}
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            aria-label="Search"
-                        >
-                            <FiSearch className="w-5 h-5" />
-                        </button>
-
-                        {/* Wishlist */}
-                        <Link
-                            href="/wishlist"
-                            className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            aria-label="Wishlist"
-                        >
-                            <FiHeart className="w-5 h-5" />
-                            {wishlistItems.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-[var(--color-primary,#D4AF37)] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
-                                    {wishlistItems.length}
-                                </span>
-                            )}
-                        </Link>
-
-                        {/* Cart */}
-                        <Link
-                            href="/cart"
-                            className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            aria-label="Cart"
-                        >
-                            <FiShoppingCart className="w-5 h-5" />
-                            {cartItems.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-[var(--color-primary,#D4AF37)] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
-                                    {cartItems.length}
-                                </span>
-                            )}
-                        </Link>
-
-                        {/* User Menu */}
-                        {user ? (
-                            <div className="relative group">
-                                <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                                    <FiUser className="w-5 h-5" />
-                                </button>
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                                    <div className="p-4 border-b">
-                                        <p className="font-semibold">{user.name}</p>
-                                        <p className="text-sm text-gray-500">{user.email}</p>
-                                    </div>
-                                    <div className="py-2">
-                                        <Link
-                                            href="/profile"
-                                            className="block px-4 py-2 hover:bg-gray-100 transition-colors"
-                                        >
-                                            My Profile
-                                        </Link>
-                                        <Link
-                                            href="/orders"
-                                            className="block px-4 py-2 hover:bg-gray-100 transition-colors"
-                                        >
-                                            My Orders
-                                        </Link>
-                                        <button
-                                            onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors flex items-center gap-2 text-red-600"
-                                        >
-                                            <FiLogOut className="w-4 h-4" />
-                                            Logout
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <Link
-                                href="/auth/login"
+                    {/* User Menu */}
+                    {user ? (
+                        <div className="relative">
+                            <button
+                                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                                aria-label="Login"
                             >
                                 <FiUser className="w-5 h-5" />
-                            </Link>
-                        )}
+                            </button>
 
-                        {/* Mobile Menu Toggle */}
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            aria-label="Menu"
-                        >
-                            {isMenuOpen ? (
-                                <FiX className="w-6 h-6" />
-                            ) : (
-                                <FiMenu className="w-6 h-6" />
+                            {/* User Dropdown */}
+                            {isUserMenuOpen && (
+                                <>
+                                    <div
+                                        className="fixed inset-0 z-40"
+                                        onClick={() => setIsUserMenuOpen(false)}
+                                    />
+                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 animate-fadeIn">
+                                        <div className="p-4 border-b bg-gray-50/50">
+                                            <p className="font-semibold truncate text-gray-900">{user.name}</p>
+                                            <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                                        </div>
+                                        <div className="py-2">
+                                            {user.role === 'admin' && (
+                                                <Link
+                                                    href="/admin"
+                                                    onClick={() => setIsUserMenuOpen(false)}
+                                                    className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                                                >
+                                                    Admin Dashboard
+                                                </Link>
+                                            )}
+                                            <Link
+                                                href="/profile"
+                                                onClick={() => setIsUserMenuOpen(false)}
+                                                className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                                            >
+                                                My Profile
+                                            </Link>
+                                            <Link
+                                                href="/orders"
+                                                onClick={() => setIsUserMenuOpen(false)}
+                                                className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                                            >
+                                                My Orders
+                                            </Link>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                                            >
+                                                <FiLogOut className="w-4 h-4" />
+                                                Logout
+                                            </button>
+                                        </div>
+                                    </div>
+                                </>
                             )}
-                        </button>
-                    </div>
+                        </div>
+                    ) : (
+                        <Link
+                            href="/auth/login"
+                            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            aria-label="Login"
+                        >
+                            <FiUser className="w-5 h-5" />
+                        </Link>
+                    )}
 
+                    {/* Mobile Menu Toggle */}
+                    <button
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        aria-label="Menu"
+                    >
+                        {isMenuOpen ? (
+                            <FiX className="w-6 h-6" />
+                        ) : (
+                            <FiMenu className="w-6 h-6" />
+                        )}
+                    </button>
                 </div>
+            </div>
 
-                {/* Mobile Menu */}
-                {isMenuOpen && (
-                    <div className="md:hidden py-4 border-b animate-fadeIn">
-                        <nav className="flex flex-col space-y-3">
+            {/* Mobile Menu Dropdown */}
+            {isMenuOpen && (
+                <div className="absolute top-16 left-0 w-full bg-white shadow-lg border-t border-gray-100 z-50 lg:hidden animate-slideDown">
+                    <div className="container mx-auto px-4 py-4">
+                        <nav className="flex flex-col space-y-1">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setIsMenuOpen(false)}
-                                    className="text-gray-700 hover:text-[var(--color-primary,#D4AF37)] font-medium transition-colors py-2"
+                                    className="text-gray-800 hover:text-[var(--color-primary,#D4AF37)] hover:bg-gray-50 font-medium transition-colors px-4 py-3 rounded-lg flex items-center justify-between"
                                 >
                                     {link.label}
                                 </Link>
                             ))}
                         </nav>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
             <style dangerouslySetInnerHTML={{
                 __html: `
@@ -256,6 +277,6 @@ export default function Header() {
                     />
                 </div>
             )}
-        </div>
+        </header>
     );
 }

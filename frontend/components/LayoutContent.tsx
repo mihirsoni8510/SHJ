@@ -17,7 +17,7 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
     return (
         <>
             {!isAuthPage && !isAdminPage && <Header />}
-            <main className="min-h-screen">
+            <main className="min-h-screen pb-5">
                 {children}
             </main>
             {!isAuthPage && !isAdminPage && <Footer />}

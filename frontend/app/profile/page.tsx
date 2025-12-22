@@ -88,7 +88,7 @@ export default function ProfilePage() {
                     {/* Main Content */}
                     <div className="flex-1 space-y-6">
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                            <div className="p-6 border-b border-gray-100 flex items-center justify-between gap-4">
                                 <h3 className="text-lg font-bold text-gray-900">Personal Information</h3>
                                 {!isEditing ? (
                                     <button
