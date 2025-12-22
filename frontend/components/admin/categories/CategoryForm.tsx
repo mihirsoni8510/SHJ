@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Category } from '@/lib/types';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 const categorySchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -53,9 +54,11 @@ export default function CategoryForm({ initialData, isEditing = false }: Categor
             } else {
                 await createCategory.mutateAsync(categoryData);
             }
+            toast.success(isEditing ? 'Category updated successfully' : 'Category created successfully');
             router.push('/admin/categories');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Submit error:', error);
+            toast.error(error.message || 'Failed to save category');
         }
     };
 
@@ -71,15 +74,18 @@ export default function CategoryForm({ initialData, isEditing = false }: Categor
                     const base64 = reader.result as string;
                     const url = await uploadImage.mutateAsync(base64);
                     setImage(url);
-                } catch (err) {
+                    toast.success('Image uploaded successfully');
+                } catch (err: any) {
                     console.error('Upload error:', err);
+                    toast.error(err.message || 'Failed to upload image');
                 } finally {
                     setUploading(false);
                 }
             };
             reader.readAsDataURL(file);
-        } catch (error) {
+        } catch (error: any) {
             setUploading(false);
+            toast.error('Failed to read image file');
         }
     };
 

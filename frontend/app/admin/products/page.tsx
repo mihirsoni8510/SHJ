@@ -4,15 +4,24 @@ import { useAdminProducts, useDeleteProduct } from '@/hooks/useApi';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiFilter, FiShoppingBag } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 export default function AdminProductsPage() {
     const { data: products = [], isLoading } = useAdminProducts();
     const deleteProduct = useDeleteProduct();
 
-    const handleDelete = async (id: string) => {
-        if (window.confirm('Are you sure you want to delete this product?')) {
-            await deleteProduct.mutateAsync(id);
-        }
+    const handleDelete = (id: string) => {
+        toast.warning('Are you sure you want to delete this product?', {
+            description: 'This action cannot be undone.',
+            action: {
+                label: 'Delete',
+                onClick: () => deleteProduct.mutate(id)
+            },
+            cancel: {
+                label: 'Cancel',
+                onClick: () => { }
+            },
+        });
     };
 
     return (

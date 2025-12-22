@@ -84,7 +84,7 @@ export default function AdminLayout({
                             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                         </button>
 
-                        <Link href="/profile" className="flex items-center gap-3 pl-4 border-l border-gray-200 group">
+                        <Link href="" className="flex items-center gap-3 pl-4 border-l border-gray-200 group">
                             <div className="text-right hidden sm:block">
                                 <p className="text-sm font-semibold text-gray-900 group-hover:text-amber-600 transition-colors">{user?.name}</p>
                                 <p className="text-xs text-gray-500 capitalize">{user?.role} Account</p>

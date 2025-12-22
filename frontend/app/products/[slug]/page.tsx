@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { FiShoppingCart, FiHeart, FiShare2, FiShield, FiRotateCcw, FiTruck } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export default function ProductDetailPage() {
     const params = useParams();

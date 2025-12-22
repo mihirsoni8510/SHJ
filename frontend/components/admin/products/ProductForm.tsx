@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Product } from '@/lib/types';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 const productSchema = z.object({
     name: z.string().min(3, 'Name must be at least 3 characters'),
@@ -71,9 +72,11 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
             } else {
                 await createProduct.mutateAsync(productData);
             }
+            toast.success(isEditing ? 'Product updated successfully' : 'Product created successfully');
             router.push('/admin/products');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Submit error:', error);
+            toast.error(error.message || 'Failed to save product');
         }
     };
 
@@ -102,8 +105,10 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
 
             const uploadedUrls = await Promise.all(uploadPromises);
             setImages((prev) => [...prev, ...uploadedUrls]);
-        } catch (error) {
+            toast.success(`${uploadedUrls.length} image(s) uploaded successfully`);
+        } catch (error: any) {
             console.error('Upload failed:', error);
+            toast.error(error.message || 'Failed to upload images');
         } finally {
             setUploading(false);
         }

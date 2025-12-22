@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart, useUpdateCart, useRemoveFromCart } from '@/hooks/useApi';
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag } from 'react-icons/fi';
+import { toast } from 'sonner';
 
 export default function CartPage() {
     const { data: cartItems = [], isLoading } = useCart();
@@ -26,9 +27,17 @@ export default function CartPage() {
     };
 
     const handleRemove = (productId: string) => {
-        if (confirm('Are you sure you want to remove this item?')) {
-            removeFromCart.mutate(productId);
-        }
+        toast.warning('Remove from cart?', {
+            description: 'Are you sure you want to remove this item?',
+            action: {
+                label: 'Remove',
+                onClick: () => removeFromCart.mutate(productId)
+            },
+            cancel: {
+                label: 'Cancel',
+                onClick: () => { }
+            },
+        });
     };
 
     if (isLoading) {

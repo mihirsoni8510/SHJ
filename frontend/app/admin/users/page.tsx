@@ -3,7 +3,8 @@
 import { useAdminUsers, useUpdateUserRole } from '@/hooks/useApi';
 import { FiSearch, FiUser, FiMail, FiPhone, FiCalendar, FiShield } from 'react-icons/fi';
 import { useState } from 'react';
-import type { User } from '@/lib/types';
+import { toast } from 'sonner';
+
 
 export default function AdminUsersPage() {
     const { data: users = [], isLoading } = useAdminUsers();
@@ -15,10 +16,17 @@ export default function AdminUsersPage() {
         user.email.toLowerCase().includes(search.toLowerCase())
     );
 
-    const handleRoleChange = async (userId: string, newRole: string) => {
-        if (window.confirm(`Are you sure you want to change this user's role to ${newRole}?`)) {
-            await updateUserRole.mutateAsync({ id: userId, role: newRole });
-        }
+    const handleRoleChange = (userId: string, newRole: string) => {
+        toast.warning(`Are you sure you want to change this user's role to ${newRole}?`, {
+            action: {
+                label: 'Confirm',
+                onClick: () => updateUserRole.mutate({ id: userId, role: newRole })
+            },
+            cancel: {
+                label: 'Cancel',
+                onClick: () => { }
+            },
+        });
     };
 
     return (
@@ -95,8 +103,8 @@ export default function AdminUsersPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.role === 'admin'
-                                                    ? 'bg-purple-100 text-purple-700'
-                                                    : 'bg-blue-100 text-blue-700'
+                                                ? 'bg-purple-100 text-purple-700'
+                                                : 'bg-blue-100 text-blue-700'
                                                 }`}>
                                                 {user.role}
                                             </span>

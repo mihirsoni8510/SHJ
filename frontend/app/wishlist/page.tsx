@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useWishlist, useRemoveFromWishlist, useAddToCart } from '@/hooks/useApi';
 import { FiTrash2, FiShoppingCart, FiHeart } from 'react-icons/fi';
+import { toast } from 'sonner';
 
 export default function WishlistPage() {
     const { data: wishlistItems = [], isLoading } = useWishlist();
@@ -11,9 +12,17 @@ export default function WishlistPage() {
     const addToCart = useAddToCart();
 
     const handleRemove = (productId: string) => {
-        if (confirm('Are you sure you want to remove this item from wishlist?')) {
-            removeFromWishlist.mutate(productId);
-        }
+        toast.warning('Remove from wishlist?', {
+            description: 'Are you sure you want to remove this item?',
+            action: {
+                label: 'Remove',
+                onClick: () => removeFromWishlist.mutate(productId)
+            },
+            cancel: {
+                label: 'Cancel',
+                onClick: () => { }
+            },
+        });
     };
 
     const handleAddToCart = (productId: string, productName: string) => {

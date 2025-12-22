@@ -4,15 +4,24 @@ import { useCategories, useDeleteCategory } from '@/hooks/useApi';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 export default function AdminCategoriesPage() {
     const { data: categories = [], isLoading } = useCategories();
     const deleteCategory = useDeleteCategory();
 
-    const handleDelete = async (id: string) => {
-        if (window.confirm('Are you sure you want to delete this category? All products in this category will be affected.')) {
-            await deleteCategory.mutateAsync(id);
-        }
+    const handleDelete = (id: string) => {
+        toast.warning('Are you sure you want to delete this category?', {
+            description: 'All products in this category will be affected. This action cannot be undone.',
+            action: {
+                label: 'Delete',
+                onClick: () => deleteCategory.mutate(id)
+            },
+            cancel: {
+                label: 'Cancel',
+                onClick: () => { }
+            },
+        });
     };
 
     return (
