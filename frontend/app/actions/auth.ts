@@ -24,14 +24,14 @@ export async function loginAction(formData: any) {
             return { error: 'Invalid email or password' };
         }
 
-        const token = generateToken({
+        const token = await generateToken({
             id: user.id,
             email: user.email,
             name: user.name,
             role: user.role,
         });
 
-        await setAuthCookie(token);
+        await setAuthCookie(token, user.role);
 
         // Merge guest items
         const cookieStore = await cookies();
@@ -102,14 +102,14 @@ export async function registerAction(formData: any) {
             },
         });
 
-        const token = generateToken({
+        const token = await generateToken({
             id: user.id,
             email: user.email,
             name: user.name,
             role: user.role,
         });
 
-        await setAuthCookie(token);
+        await setAuthCookie(token, user.role);
 
         // Merge guest items
         const cookieStore = await cookies();
