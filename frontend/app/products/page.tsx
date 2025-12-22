@@ -81,7 +81,7 @@ function ProductsContent() {
                                         key={metal}
                                         href={`/products?metal=${metal}`}
                                         className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all border ${searchParams.get('metal') === metal
-                                            ? 'bg-gray-900 text-white border-gray-900'
+                                            ? 'bg-gray-300 text-gray-900 border-gray-900'
                                             : 'bg-white text-gray-600 border-gray-200 hover:border-amber-500 hover:text-amber-500'
                                             }`}
                                     >

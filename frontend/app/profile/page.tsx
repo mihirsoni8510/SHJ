@@ -16,7 +16,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         if (!isLoading && !user) {
-            router.push('/auth/login');
+            router.push('/');
         }
         if (user) {
             setName(user.name);
@@ -75,8 +75,8 @@ export default function ProfilePage() {
                                 onClick={() => item.href && router.push(item.href)}
                                 disabled={item.disabled}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${item.active
-                                        ? 'bg-amber-50 text-amber-600 shadow-sm'
-                                        : 'text-gray-600 hover:bg-white hover:shadow-sm'
+                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                    : 'text-gray-600 hover:bg-white hover:shadow-sm'
                                     } ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                                 <item.icon className="w-5 h-5" />

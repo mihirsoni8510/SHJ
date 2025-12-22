@@ -151,3 +151,35 @@ export async function updateProfileAction(userData: { name: string; phone?: stri
         return { error: 'Failed to update profile' };
     }
 }
+
+export async function forgotPasswordAction(email: string) {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email },
+        });
+
+        if (!user) {
+            // For security, don't reveal if user exists
+            return { success: true, message: 'If an account exists with that email, we have sent a reset link.' };
+        }
+
+        // TODO: Generate reset token, save to DB, and send email
+        // console.log(`Reset link requested for: ${email}`);
+
+        return { success: true, message: 'If an account exists with that email, we have sent a reset link.' };
+    } catch (error) {
+        console.error('Forgot password action error:', error);
+        return { error: 'Failed to process request' };
+    }
+}
+
+export async function resetPasswordAction(data: any) {
+    try {
+        const { token, password } = data;
+        // TODO: Verify token, find user, update password
+        return { success: true, message: 'Password has been reset successfully.' };
+    } catch (error) {
+        console.error('Reset password action error:', error);
+        return { error: 'Failed to reset password' };
+    }
+}

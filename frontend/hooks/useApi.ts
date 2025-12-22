@@ -10,7 +10,9 @@ import {
     registerAction,
     logoutAction,
     getMeAction,
-    updateProfileAction
+    updateProfileAction,
+    forgotPasswordAction,
+    resetPasswordAction
 } from '@/app/actions/auth';
 import {
     getProductsAction,
@@ -134,6 +136,38 @@ export function useUpdateProfile() {
         },
         onError: (error: any) => {
             toast.error(error.message || 'Failed to update profile');
+        },
+    });
+}
+
+export function useForgotPassword() {
+    return useMutation({
+        mutationFn: async (email: string) => {
+            const result = await forgotPasswordAction(email);
+            if (result.error) throw new Error(result.error);
+            return result;
+        },
+        onSuccess: (data) => {
+            toast.success(data.message || 'Reset link sent to your email');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to request password reset');
+        },
+    });
+}
+
+export function useResetPassword() {
+    return useMutation({
+        mutationFn: async (data: any) => {
+            const result = await resetPasswordAction(data);
+            if (result.error) throw new Error(result.error);
+            return result;
+        },
+        onSuccess: (data) => {
+            toast.success(data.message || 'Password reset successfully');
+        },
+        onError: (error: any) => {
+            toast.error(error.message || 'Failed to reset password');
         },
     });
 }
