@@ -176,7 +176,8 @@ img {
 .input {
   width: 100%;
   padding: 0.75rem 1rem;
-  padding-left: 1rem; /* Base padding */
+  padding-left: 1rem;
+  /* Base padding */
   border: 2px solid var(--color-border);
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -273,5 +274,90 @@ img {
 
   .container {
     padding: 0 1rem;
+  }
+}
+
+/* Custom Styles for Swiper */
+.hero-swiper {
+  width: 100%;
+  height: 600px;
+}
+
+.hero-swiper .swiper-pagination {
+  bottom: 2rem;
+}
+
+.hero-swiper .swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+  background: #d4a574;
+  width: 32px;
+  border-radius: 6px;
+}
+
+.hero-swiper .swiper-button-next,
+.hero-swiper .swiper-button-prev {
+  color: white;
+  background: transparent;
+  width: 50px;
+  height: 50px;
+  transition: all 0.3s ease;
+}
+
+.hero-swiper .swiper-button-next:after,
+.hero-swiper .swiper-button-prev:after {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.hero-swiper .swiper-button-next:hover,
+.hero-swiper .swiper-button-prev:hover {
+  background: transparent;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+/* Mobile responsive adjustments for Swiper */
+@media (max-width: 768px) {
+
+  .hero-swiper .swiper-button-next,
+  .hero-swiper .swiper-button-prev {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero-swiper .swiper-button-next:after,
+  .hero-swiper .swiper-button-prev:after {
+    font-size: 16px;
   }
 }
