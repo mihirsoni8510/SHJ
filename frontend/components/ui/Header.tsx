@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { FiSearch, FiHeart, FiShoppingCart, FiUser, FiMenu, FiX, FiLogOut } from 'react-icons/fi';
 import { useAuth, useCart, useWishlist, useLogout } from '@/hooks/useApi';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,6 +32,7 @@ export default function Header() {
     const handleLogout = async () => {
         try {
             await logout.mutateAsync();
+            await signOut({ redirect: false });
             router.push('/');
         } catch (error) {
             console.error('Logout failed:', error);

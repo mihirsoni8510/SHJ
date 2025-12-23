@@ -20,13 +20,28 @@ export async function verifyToken(token: string): Promise<UserPayload | null> {
     return vtoken(token);
 }
 
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth-options';
+
 export async function getCurrentUser(): Promise<UserPayload | null> {
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
 
-    if (!token) return null;
+    if (token) {
+        return verifyToken(token);
+    }
 
-    return verifyToken(token);
+    const session = await getServerSession(authOptions);
+    if (session?.user) {
+        return {
+            id: (session.user as any).id,
+            email: session.user.email!,
+            name: session.user.name!,
+            role: (session.user as any).role || 'user',
+        };
+    }
+
+    return null;
 }
 
 export async function setAuthCookie(token: string, role: string) {

@@ -6,13 +6,9 @@ import type { User, Product, CartItem, WishlistItem, Category, Order } from '@/l
 
 // Import server actions
 import {
-    loginAction,
-    registerAction,
     logoutAction,
     getMeAction,
-    updateProfileAction,
-    forgotPasswordAction,
-    resetPasswordAction
+    updateProfileAction
 } from '@/app/actions/auth';
 import {
     getProductsAction,
@@ -60,52 +56,6 @@ export function useAuth() {
     });
 }
 
-export function useLogin() {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: async (credentials: { email: string; password: string }) => {
-            const result = await loginAction(credentials);
-            if (result.error) throw new Error(result.error);
-            return result;
-        },
-        onSuccess: (data) => {
-            if (data?.user) {
-                queryClient.setQueryData(['user'], data.user);
-            }
-            queryClient.invalidateQueries({ queryKey: ['user'] });
-            toast.success('Logged in successfully!');
-        },
-        onError: (error: any) => {
-            toast.error(error.message || 'Login failed');
-        },
-    });
-}
-
-export function useRegister() {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: async (userData: {
-            email: string;
-            password: string;
-            name: string;
-            phone?: string;
-        }) => {
-            const result = await registerAction(userData);
-            if (result.error) throw new Error(result.error);
-            return result;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['user'] });
-            toast.success('Account created successfully!');
-        },
-        onError: (error: any) => {
-            toast.error(error.message || 'Registration failed');
-        },
-    });
-}
-
 export function useLogout() {
     const queryClient = useQueryClient();
 
@@ -136,38 +86,6 @@ export function useUpdateProfile() {
         },
         onError: (error: any) => {
             toast.error(error.message || 'Failed to update profile');
-        },
-    });
-}
-
-export function useForgotPassword() {
-    return useMutation({
-        mutationFn: async (email: string) => {
-            const result = await forgotPasswordAction(email);
-            if (result.error) throw new Error(result.error);
-            return result;
-        },
-        onSuccess: (data) => {
-            toast.success(data.message || 'Reset link sent to your email');
-        },
-        onError: (error: any) => {
-            toast.error(error.message || 'Failed to request password reset');
-        },
-    });
-}
-
-export function useResetPassword() {
-    return useMutation({
-        mutationFn: async (data: any) => {
-            const result = await resetPasswordAction(data);
-            if (result.error) throw new Error(result.error);
-            return result;
-        },
-        onSuccess: (data) => {
-            toast.success(data.message || 'Password reset successfully');
-        },
-        onError: (error: any) => {
-            toast.error(error.message || 'Failed to reset password');
         },
     });
 }
