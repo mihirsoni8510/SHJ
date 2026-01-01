@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useProducts, useCategories } from '@/hooks/useApi';
 import ProductCard from '@/components/ProductCard';
@@ -12,11 +12,13 @@ function ProductsContent() {
     const categorySlug = searchParams.get('category');
     const searchQuery = searchParams.get('search');
     const metalParam = searchParams.get('metal');
+    const [sortBy, setSortBy] = useState('newest');
 
     const { data, isLoading } = useProducts({
         category: categorySlug || undefined,
         search: searchQuery || undefined,
         metal: metalParam || undefined,
+        sort: sortBy,
         limit: 20
     });
 
@@ -73,7 +75,7 @@ function ProductsContent() {
                             </div>
                         </div>
 
-                        <div>
+                        {/* <div>
                             <h3 className="text-lg font-bold text-gray-900 mb-4 transition-all">Shop by Metal</h3>
                             <div className="flex flex-wrap gap-2">
                                 {['Gold', 'Silver', 'Diamond', 'Platinum'].map((metal) => (
@@ -89,7 +91,7 @@ function ProductsContent() {
                                     </Link>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="p-6 bg-amber-50 rounded-2xl border border-amber-100">
                             <h4 className="font-bold text-amber-900 mb-2">Need Help?</h4>
@@ -108,10 +110,14 @@ function ProductsContent() {
                                 Showing <span className="text-gray-900 font-bold">{data?.products.length || 0}</span> products
                             </p>
                             <div className="flex items-center gap-4">
-                                <select className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium outline-none focus:ring-2 focus:ring-amber-500/20">
-                                    <option>Newest Arrivals</option>
-                                    <option>Price: Low to High</option>
-                                    <option>Price: High to Low</option>
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium outline-none focus:ring-2 focus:ring-amber-500/20"
+                                >
+                                    <option value="newest">Newest Arrivals</option>
+                                    <option value="price_asc">Price: Low to High</option>
+                                    <option value="price_desc">Price: High to Low</option>
                                 </select>
                             </div>
                         </div>

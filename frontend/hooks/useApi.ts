@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { signOut } from 'next-auth/react';
 import { toast } from 'sonner';
 import type { User, Product, CartItem, WishlistItem, Category, Order } from '@/lib/types';
 
@@ -62,12 +63,15 @@ export function useLogout() {
     return useMutation({
         mutationFn: async () => {
             await logoutAction();
+            // Clear NextAuth session
+            await signOut({ redirect: false });
         },
         onSuccess: () => {
             queryClient.setQueryData(['user'], null);
             queryClient.invalidateQueries({ queryKey: ['cart'] });
             queryClient.invalidateQueries({ queryKey: ['wishlist'] });
             toast.success('Logged out successfully!');
+            window.location.href = '/';
         },
     });
 }
@@ -97,6 +101,7 @@ export function useProducts(filters?: {
     metal?: string;
     minPrice?: number;
     maxPrice?: number;
+    sort?: string;
     page?: number;
     limit?: number;
 }) {
@@ -109,11 +114,11 @@ export function useProducts(filters?: {
     });
 }
 
-export function useAdminProducts() {
+export function useAdminProducts(filters?: { category?: string; search?: string }) {
     return useQuery({
-        queryKey: ['admin-products'],
+        queryKey: ['admin-products', filters],
         queryFn: async () => {
-            const result = await getAdminProductsAction();
+            const result = await getAdminProductsAction(filters);
             return result.products as Product[];
         },
     });

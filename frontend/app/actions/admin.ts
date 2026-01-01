@@ -142,14 +142,55 @@ export async function getAdminCategoryAction(id: string) {
     }
 }
 
-export async function getAdminProductsAction() {
+export async function getAdminProductsAction(filters?: { category?: string; search?: string }) {
     try {
         const user = await getCurrentUser();
         if (!user || user.role.toLowerCase() !== 'admin') {
             return { error: 'Unauthorized' };
         }
 
+        const where: any = {};
+
+        if (filters?.category) {
+            where.OR = [
+                {
+                    category: {
+                        name: {
+                            contains: filters.category,
+                            mode: 'insensitive',
+                        },
+                    },
+                },
+                {
+                    category: {
+                        slug: {
+                            contains: filters.category,
+                            mode: 'insensitive',
+                        },
+                    },
+                },
+                {
+                    metal: {
+                        equals: filters.category,
+                        mode: 'insensitive',
+                    },
+                },
+            ];
+        }
+
+        if (filters?.search) {
+            where.AND = [
+                {
+                    OR: [
+                        { name: { contains: filters.search, mode: 'insensitive' } },
+                        { slug: { contains: filters.search, mode: 'insensitive' } },
+                    ]
+                }
+            ];
+        }
+
         const products = await prisma.product.findMany({
+            where,
             include: { category: true },
             orderBy: { createdAt: 'desc' },
         });

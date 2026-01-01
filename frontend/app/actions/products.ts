@@ -12,6 +12,7 @@ export async function getProductsAction(filters?: any) {
             metal,
             minPrice,
             maxPrice,
+            sort,
             page = 1,
             limit = 12
         } = filters || {};
@@ -43,15 +44,20 @@ export async function getProductsAction(filters?: any) {
             if (maxPrice) where.price.lte = parseFloat(maxPrice);
         }
 
+        let orderBy: any = { createdAt: 'desc' };
+        if (sort === 'price_asc') {
+            orderBy = { price: 'asc' };
+        } else if (sort === 'price_desc') {
+            orderBy = { price: 'desc' };
+        }
+
         const [products, total] = await Promise.all([
             prisma.product.findMany({
                 where,
                 include: {
                     category: true,
                 },
-                orderBy: {
-                    createdAt: 'desc',
-                },
+                orderBy,
                 skip,
                 take: limit,
             }),

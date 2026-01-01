@@ -33,8 +33,13 @@ export async function middleware(request: NextRequest) {
     // 1. Handle Admin Routes
     const isAdminRoute = ADMIN_ROUTES.some(route => pathname.startsWith(route));
     if (isAdminRoute) {
+        // Allow access to /admin/login without redirection loop
+        if (pathname === '/admin/login') {
+            return NextResponse.next();
+        }
+
         if (!userPayload || userPayload.role?.toLowerCase() !== Role.ADMIN) {
-            const loginUrl = new URL('/auth/login', request.url);
+            const loginUrl = new URL('/admin/login', request.url);
             loginUrl.searchParams.set('callbackUrl', pathname);
             return NextResponse.redirect(loginUrl);
         }

@@ -3,7 +3,7 @@
 import AdminSidebar from '@/components/admin/Sidebar';
 import { FiBell, FiSearch, FiMenu, FiX } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useApi';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
@@ -14,6 +14,7 @@ export default function AdminLayout({
 }) {
     const { data: user, isLoading } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
@@ -34,11 +35,17 @@ export default function AdminLayout({
 
     useEffect(() => {
         if (!isLoading) {
-            if (!user || user.role.toLowerCase() !== 'admin') {
-                router.push('/');
+            if (pathname === '/admin/login') {
+                if (user && user.role.toLowerCase() === 'admin') {
+                    router.push('/admin');
+                }
+            } else {
+                if (!user || user.role.toLowerCase() !== 'admin') {
+                    router.push('/admin/login');
+                }
             }
         }
-    }, [user, isLoading, router]);
+    }, [user, isLoading, router, pathname]);
 
     if (isLoading) {
         return (
@@ -49,7 +56,14 @@ export default function AdminLayout({
     }
 
     if (!user || user.role.toLowerCase() !== 'admin') {
+        if (pathname === '/admin/login') {
+            return <>{children}</>;
+        }
         return null;
+    }
+
+    if (pathname === '/admin/login') {
+        return <>{children}</>;
     }
 
     return (

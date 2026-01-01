@@ -5,9 +5,26 @@ import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiFilter, FiShoppingBag } from 're
 import Link from 'next/link';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import { useState, useEffect } from 'react';
 
 export default function AdminProductsPage() {
-    const { data: products = [], isLoading } = useAdminProducts();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('');
+
+    // Debounce search term to avoid too many requests
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    const { data: products = [], isLoading } = useAdminProducts({
+        search: debouncedSearch,
+        category: categoryFilter
+    });
     const deleteProduct = useDeleteProduct();
 
     const handleDelete = (id: string) => {
@@ -48,6 +65,8 @@ export default function AdminProductsPage() {
                         type="text"
                         placeholder="Search products by name or SKU..."
                         className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 pl-10 pr-4 focus:ring-2 focus:ring-amber-500/20"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
@@ -55,7 +74,11 @@ export default function AdminProductsPage() {
                         <FiFilter />
                         Filter
                     </button>
-                    <select className="w-full sm:w-auto md:w-48 bg-white border border-gray-200 rounded-lg py-2 px-3 text-gray-600 focus:ring-2 focus:ring-amber-500/20 outline-none">
+                    <select
+                        className="w-full sm:w-auto md:w-48 bg-white border border-gray-200 rounded-lg py-2 px-3 text-gray-600 focus:ring-2 focus:ring-amber-500/20 outline-none"
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                    >
                         <option value="">All Categories</option>
                         <option value="gold">Gold</option>
                         <option value="diamond">Diamond</option>
