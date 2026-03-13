@@ -3,7 +3,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState, ReactNode } from 'react';
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'sonner';
+import { SessionProvider } from 'next-auth/react';
 
 export default function Providers({ children }: { children: ReactNode }) {
     const [queryClient] = useState(
@@ -19,19 +20,12 @@ export default function Providers({ children }: { children: ReactNode }) {
     );
 
     return (
-        <QueryClientProvider client={queryClient}>
-            {children}
-            <Toaster
-                position="top-right"
-                toastOptions={{
-                    duration: 3000,
-                    style: {
-                        background: '#333',
-                        color: '#fff',
-                    },
-                }}
-            />
-            <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <SessionProvider>
+            <QueryClientProvider client={queryClient}>
+                {children}
+                <Toaster position="top-center" richColors expand={false} />
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+        </SessionProvider>
     );
 }

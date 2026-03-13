@@ -6,6 +6,14 @@ import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import { useProducts } from '@/hooks/useApi';
 import { FiArrowRight, FiPenTool } from 'react-icons/fi';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation, EffectFade } from 'swiper/modules';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/effect-fade';
 
 export default function HomePage() {
   const router = useRouter();
@@ -17,35 +25,97 @@ export default function HomePage() {
     { name: 'Silver Jewelry', slug: 'silver', image: '/home/silver.jpg' },
   ];
 
+  // Hero slider data
+  const heroSlides = [
+    {
+      id: 1,
+      image: '/home/hero-bg.jpg',
+      title: 'Exquisite Jewellery Collection',
+      subtitle: 'Discover timeless elegance with our handcrafted gold, diamond, and silver jewelry',
+      buttonText: 'Shop Now',
+      buttonLink: '/products'
+    },
+    {
+      id: 2,
+      image: '/home/gold.webp',
+      title: 'Premium Gold Collection',
+      subtitle: 'Crafted with precision, designed to perfection. Explore our exclusive gold jewelry',
+      buttonText: 'Explore Gold',
+      buttonLink: '/products?category=gold'
+    },
+    {
+      id: 3,
+      image: '/home/diamond.jpg',
+      title: 'Brilliant Diamond Designs',
+      subtitle: 'Experience luxury with our stunning diamond jewelry collection',
+      buttonText: 'View Diamonds',
+      buttonLink: '/products?category=diamond'
+    },
+    {
+      id: 4,
+      image: '/home/silver.jpg',
+      title: 'Elegant Silver Jewelry',
+      subtitle: 'Contemporary designs meeting traditional craftsmanship',
+      buttonText: 'Shop Silver',
+      buttonLink: '/products?category=silver'
+    }
+  ];
+
   return (
     <div>
-      {/* Hero Section */}
-      <section>
-        <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
-          <Image
-            src="/home/hero-bg.jpg"
-            alt="Exquisite Jewelry Collection"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-            <h2 className="text-white text-5xl md:text-7xl font-bold mb-6 tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-              Exquisite jewellery Collection
-            </h2>
-            <p className="text-gray-100 text-xl md:text-2xl mb-10 max-w-2xl font-light">
-              Discover timeless elegance with our handcrafted gold, diamond, and silver jewelry
-            </p>
-            <button
-              onClick={() => router.push('/products')}
-              className="bg-[#d4a574]  text-white px-10 py-4 rounded-full transition-all transform hover:scale-105 shadow-xl flex items-center gap-3 font-semibold text-lg"
-            >
-              Shop Now
-              <FiArrowRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+      {/* Hero Slider Section */}
+      <section className="hero-slider-section">
+        <Swiper
+          modules={[Autoplay, Pagination, Navigation, EffectFade]}
+          spaceBetween={0}
+          slidesPerView={1}
+          effect="fade"
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          pagination={{
+            clickable: true,
+            dynamicBullets: true,
+          }}
+          navigation={true}
+          loop={true}
+          className="hero-swiper"
+        >
+          {heroSlides.map((slide) => (
+            <SwiperSlide key={slide.id}>
+              <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  className="object-cover"
+                  priority={slide.id === 1}
+                />
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+                  <h2
+                    className="text-white text-5xl md:text-7xl font-bold mb-6 tracking-tight animate-fade-in-up"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
+                    {slide.title}
+                  </h2>
+                  <p className="text-gray-100 text-xl md:text-2xl mb-10 max-w-2xl font-light animate-fade-in-up animation-delay-200">
+                    {slide.subtitle}
+                  </p>
+                  <button
+                    onClick={() => router.push(slide.buttonLink)}
+                    className="bg-[#d4a574] text-white px-10 py-4 rounded-full transition-all transform hover:scale-105 shadow-xl flex items-center gap-3 font-semibold text-lg animate-fade-in-up animation-delay-400"
+                  >
+                    {slide.buttonText}
+                    <FiArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
       </section>
 
       {/* Shop by Category */}
@@ -64,9 +134,8 @@ export default function HomePage() {
           {/* Category Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
             {categories.map((category) => (
-              <Link
+              <div
                 key={category.slug}
-                href={`/products?category=${category.slug}`}
                 className="group relative w-full max-w-[380px] aspect-[4/5] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
               >
                 {/* Gradient Overlay */}
@@ -88,12 +157,12 @@ export default function HomePage() {
                   >
                     {category.name}
                   </h3>
-                  <div className="flex items-center text-[var(--color-primary,#D4AF37)] font-semibold group-hover:translate-x-2 transition-transform">
+                  {/* <div className="flex items-center text-[var(--color-primary,#D4AF37)] font-semibold group-hover:translate-x-2 transition-transform">
                     Explore Collection
                     <FiArrowRight className="ml-2" />
-                  </div>
+                  </div> */}
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>

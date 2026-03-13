@@ -19,7 +19,7 @@ export default function Footer() {
                             Discover timeless elegance with our handcrafted gold, diamond, and silver jewelry.
                             Celebrating beauty and tradition since 1990.
                         </p>
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-4 pb-2">
                             <a
                                 href="https://facebook.com"
                                 target="_blank"

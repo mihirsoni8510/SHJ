@@ -13,7 +13,8 @@ datasource db {
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
-  password      String
+  emailVerified DateTime? @map("email_verified")
+  password      String?
   name          String
   phone         String?
   image         String?
@@ -26,8 +27,49 @@ model User {
   wishlistItems WishlistItem[]
   orders        Order[]
   addresses     Address[]
+  accounts      Account[]
+  sessions      Session[]
 
   @@map("users")
+}
+
+model Account {
+  id                 String  @id @default(uuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }
 
 model Category {
@@ -75,33 +117,39 @@ model Product {
 
 model CartItem {
   id        String   @id @default(uuid())
-  userId    String
+  userId    String?
+  guestId   String?
   productId String
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
+  @@unique([guestId, productId])
   @@index([userId])
+  @@index([guestId])
   @@map("cart_items")
 }
 
 model WishlistItem {
   id        String   @id @default(uuid())
-  userId    String
+  userId    String?
+  guestId   String?
   productId String
   createdAt DateTime @default(now())
 
   // Relations
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
+  @@unique([guestId, productId])
   @@index([userId])
+  @@index([guestId])
   @@map("wishlist_items")
 }
 

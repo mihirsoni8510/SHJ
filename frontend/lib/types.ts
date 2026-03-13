@@ -1,3 +1,8 @@
+export enum Role {
+    USER = 'user',
+    ADMIN = 'admin',
+}
+
 export interface User {
     id: string;
     email: string;
@@ -5,6 +10,8 @@ export interface User {
     phone?: string;
     image?: string;
     role: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Product {

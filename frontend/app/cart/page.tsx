@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart, useUpdateCart, useRemoveFromCart } from '@/hooks/useApi';
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag } from 'react-icons/fi';
+import { toast } from 'sonner';
 
 export default function CartPage() {
     const { data: cartItems = [], isLoading } = useCart();
@@ -26,9 +27,17 @@ export default function CartPage() {
     };
 
     const handleRemove = (productId: string) => {
-        if (confirm('Are you sure you want to remove this item?')) {
-            removeFromCart.mutate(productId);
-        }
+        toast.warning('Remove from cart?', {
+            description: 'Are you sure you want to remove this item?',
+            action: {
+                label: 'Remove',
+                onClick: () => removeFromCart.mutate(productId)
+            },
+            cancel: {
+                label: 'Cancel',
+                onClick: () => { }
+            },
+        });
     };
 
     if (isLoading) {
@@ -74,11 +83,20 @@ export default function CartPage() {
 
                             return (
                                 <Fragment key={item.id}>
-                                    <div className="flex gap-4 p-6 border-b last:border-b-0">
+                                    <div className="relative flex gap-4 p-4 sm:p-6 border-b last:border-b-0">
+                                        {/* Remove Button - Absolute Top Right */}
+                                        <button
+                                            onClick={() => handleRemove(item.productId)}
+                                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all z-10"
+                                            aria-label="Remove item"
+                                        >
+                                            <FiTrash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        </button>
+
                                         {/* Product Image */}
                                         <Link
                                             href={`/products/${item.product.slug}`}
-                                            className="relative w-24 h-24 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden"
+                                            className="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden border border-gray-100"
                                         >
                                             <Image
                                                 src={item.product.images?.[0] || '/placeholder-jewelry.jpg'}
@@ -88,52 +106,48 @@ export default function CartPage() {
                                             />
                                         </Link>
 
-                                        {/* Product Info */}
-                                        <div className="flex-grow">
-                                            <Link
-                                                href={`/products/${item.product.slug}`}
-                                                className="font-semibold text-gray-900 hover:text-[var(--color-primary,#D4AF37)] transition-colors mb-1 block"
-                                            >
-                                                {item.product.name}
-                                            </Link>
-                                            <p className="text-sm text-gray-500 mb-2">
-                                                {item.product.metal} • {item.product.purity}
-                                            </p>
-                                            <p className="text-lg font-bold text-[var(--color-primary,#D4AF37)]">
-                                                ₹{price.toLocaleString('en-IN')}
-                                            </p>
-                                        </div>
-
-                                        {/* Quantity Controls */}
-                                        <div className="flex flex-col items-end gap-4">
-                                            <button
-                                                onClick={() => handleRemove(item.productId)}
-                                                className="text-gray-400 hover:text-red-500 transition-colors"
-                                                aria-label="Remove item"
-                                            >
-                                                <FiTrash2 className="w-5 h-5" />
-                                            </button>
-
-                                            <div className="flex items-center gap-2 border-2 border-gray-200 rounded-lg">
-                                                <button
-                                                    onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
-                                                    disabled={item.quantity <= 1}
-                                                    className="p-2 hover:bg-gray-100 transition-colors disabled:opacity-30"
-                                                    aria-label="Decrease quantity"
+                                        {/* Product Info & Controls */}
+                                        <div className="flex flex-col flex-grow min-w-0 py-1">
+                                            {/* Header */}
+                                            <div className="pr-10 mb-1">
+                                                <Link
+                                                    href={`/products/${item.product.slug}`}
+                                                    className="font-semibold text-gray-900 hover:text-[var(--color-primary,#D4AF37)] transition-colors line-clamp-1 text-base sm:text-lg"
                                                 >
-                                                    <FiMinus className="w-4 h-4" />
-                                                </button>
-                                                <span className="w-12 text-center font-semibold">
-                                                    {item.quantity}
-                                                </span>
-                                                <button
-                                                    onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
-                                                    disabled={item.quantity >= item.product.stock}
-                                                    className="p-2 hover:bg-gray-100 transition-colors disabled:opacity-30"
-                                                    aria-label="Increase quantity"
-                                                >
-                                                    <FiPlus className="w-4 h-4" />
-                                                </button>
+                                                    {item.product.name}
+                                                </Link>
+                                                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                                                    {item.product.metal} • {item.product.purity}
+                                                </p>
+                                            </div>
+
+                                            {/* Footer - Price & Quantity */}
+                                            <div className="flex flex-wrap items-end justify-between gap-y-3 mt-auto">
+                                                <p className="text-lg sm:text-xl font-bold text-[var(--color-primary,#D4AF37)]">
+                                                    ₹{price.toLocaleString('en-IN')}
+                                                </p>
+
+                                                <div className="flex items-center gap-2 sm:gap-3 border border-gray-200 rounded-lg bg-gray-50/50 p-1">
+                                                    <button
+                                                        onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
+                                                        disabled={item.quantity <= 1}
+                                                        className="w-7 h-7 flex items-center justify-center bg-white rounded-md shadow-sm text-gray-600 hover:text-amber-600 disabled:opacity-50 disabled:hover:text-gray-600 transition-colors"
+                                                        aria-label="Decrease quantity"
+                                                    >
+                                                        <FiMinus className="w-3 h-3" />
+                                                    </button>
+                                                    <span className="w-8 text-center font-semibold text-gray-900 text-sm">
+                                                        {item.quantity}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
+                                                        disabled={item.quantity >= item.product.stock}
+                                                        className="w-7 h-7 flex items-center justify-center bg-white rounded-md shadow-sm text-gray-600 hover:text-amber-600 disabled:opacity-50 disabled:hover:text-gray-600 transition-colors"
+                                                        aria-label="Increase quantity"
+                                                    >
+                                                        <FiPlus className="w-3 h-3" />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
