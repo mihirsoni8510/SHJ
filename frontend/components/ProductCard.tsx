@@ -90,35 +90,35 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4">
+                <div className="p-3 sm:p-4">
                     {/* Category & Metal */}
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
                         {product.category && (
-                            <span className="text-xs text-gray-500 uppercase tracking-wide line-clamp-1">
+                            <span className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wide line-clamp-1">
                                 {product.category.name}
                             </span>
                         )}
                         {product.metal && (
-                            <span className="text-xs text-[var(--color-primary,#D4AF37)] font-semibold uppercase">
+                            <span className="text-[10px] sm:text-xs text-[var(--color-primary,#D4AF37)] font-semibold uppercase">
                                 • {product.metal}
                             </span>
                         )}
                     </div>
 
                     {/* Product Name */}
-                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1 group-hover:text-[var(--color-primary,#D4AF37)] transition-colors">
+                    <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base line-clamp-1 group-hover:text-[var(--color-primary,#D4AF37)] transition-colors">
                         {product.name}
                     </h3>
 
                     {/* Price & Add to Cart */}
-                    <div className="flex items-center justify-between mt-3">
+                    <div className="flex items-center justify-between mt-2 sm:mt-3">
                         <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                                <span className="text-lg font-bold text-[var(--color-primary,#D4AF37)]">
+                            <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                                <span className="text-base sm:text-lg font-bold text-[var(--color-primary,#D4AF37)]">
                                     ₹{displayPrice.toLocaleString('en-IN')}
                                 </span>
                                 {hasDiscount && (
-                                    <span className="text-xs text-gray-400 line-through">
+                                    <span className="text-[10px] sm:text-xs text-gray-400 line-through">
                                         ₹{product.price.toLocaleString('en-IN')}
                                     </span>
                                 )}
@@ -128,10 +128,10 @@ export default function ProductCard({ product }: ProductCardProps) {
                         <button
                             onClick={handleAddToCart}
                             disabled={product.stock === 0}
-                            className="bg-gray-900 text-white p-2.5 rounded-full hover:bg-[var(--color-primary,#D4AF37)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                            className="bg-gray-900 text-white p-2 sm:p-2.5 rounded-full hover:bg-[var(--color-primary,#D4AF37)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm shrink-0"
                             aria-label="Add to cart"
                         >
-                            <FiShoppingCart className="w-5 h-5" />
+                            <FiShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                     </div>
                 </div>
