@@ -65,7 +65,7 @@ export default function HomePage() {
     <div>
       {/* Hero Slider Section */}
       <section className="hero-slider-section">
-        <Swiper
+            <Swiper
           modules={[Autoplay, Pagination, Navigation, EffectFade]}
           spaceBetween={0}
           slidesPerView={1}
@@ -80,11 +80,11 @@ export default function HomePage() {
           }}
           navigation={true}
           loop={true}
-          className="hero-swiper"
+          className="hero-swiper h-[500px] md:h-[600px]"
         >
           {heroSlides.map((slide) => (
             <SwiperSlide key={slide.id}>
-              <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
+              <div className="relative h-full flex items-center justify-center overflow-hidden">
                 <Image
                   src={slide.image}
                   alt={slide.title}
@@ -95,17 +95,17 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
                   <h2
-                    className="text-white text-5xl md:text-7xl font-bold mb-6 tracking-tight animate-fade-in-up"
+                    className="text-white text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight animate-fade-in-up px-4"
                     style={{ fontFamily: 'var(--font-heading)' }}
                   >
                     {slide.title}
                   </h2>
-                  <p className="text-gray-100 text-xl md:text-2xl mb-10 max-w-2xl font-light animate-fade-in-up animation-delay-200">
+                  <p className="text-gray-100 text-lg sm:text-xl md:text-2xl mb-8 md:mb-10 max-w-2xl font-light animate-fade-in-up animation-delay-200 px-4">
                     {slide.subtitle}
                   </p>
                   <button
                     onClick={() => router.push(slide.buttonLink)}
-                    className="bg-[#d4a574] text-white px-10 py-4 rounded-full transition-all transform hover:scale-105 shadow-xl flex items-center gap-3 font-semibold text-lg animate-fade-in-up animation-delay-400"
+                    className="bg-[#d4a574] text-white px-8 md:px-10 py-3 md:py-4 rounded-full transition-all transform hover:scale-105 shadow-xl flex items-center gap-3 font-semibold text-base md:text-lg animate-fade-in-up animation-delay-400"
                   >
                     {slide.buttonText}
                     <FiArrowRight className="w-5 h-5" />
@@ -119,11 +119,11 @@ export default function HomePage() {
       </section>
 
       {/* Shop by Category */}
-      <section className="py-20 bg-white">
-        <div className="container">
+      <section className="py-12 md:py-20 bg-white">
+        <div className="container px-4">
           {/* Heading */}
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+          <div className="text-center mb-10 md:14">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
               Shop by Category
             </h2>
             <p className="text-gray-600 text-base sm:text-lg">
@@ -132,35 +132,35 @@ export default function HomePage() {
           </div>
 
           {/* Category Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 place-items-center">
             {categories.map((category) => (
               <div
                 key={category.slug}
-                className="group relative w-full max-w-[380px] aspect-[4/5] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
+                className="group relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
               >
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
 
                 {/* Image */}
                 <Image
                   src={category.image}
                   alt={category.name}
                   fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
 
                 {/* Text */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-20">
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 z-20">
                   <h3
-                    className="text-white text-2xl sm:text-3xl font-bold mb-2"
+                    className="text-white text-2xl md:text-3xl font-bold mb-2"
                     style={{ fontFamily: 'var(--font-heading)' }}
                   >
                     {category.name}
                   </h3>
-                  {/* <div className="flex items-center text-[var(--color-primary,#D4AF37)] font-semibold group-hover:translate-x-2 transition-transform">
-                    Explore Collection
+                  <div className="flex items-center text-[#d4a574] font-semibold group-hover:translate-x-2 transition-transform cursor-pointer">
+                    View Collection
                     <FiArrowRight className="ml-2" />
-                  </div> */}
+                  </div>
                 </div>
               </div>
             ))}
@@ -170,25 +170,25 @@ export default function HomePage() {
 
 
       {/* Featured Products */}
-      <section className="section bg-amber-50/30">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
+      <section className="py-12 md:py-20 bg-amber-50/30">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-10 md:mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
               Featured Products
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-base md:text-lg">
               Handpicked selections just for you
             </p>
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="skeleton h-96 rounded-lg"></div>
+                <div key={i} className="skeleton h-64 md:h-96 rounded-lg"></div>
               ))}
             </div>
           ) : data?.products && data.products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {data.products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -200,8 +200,8 @@ export default function HomePage() {
             </div>
           )}
 
-          <div className="text-center mt-12">
-            <Link href="/products" className="btn btn-outline text-lg px-8 py-4 inline-flex items-center gap-2">
+          <div className="text-center mt-10 md:mt-12">
+            <Link href="/products" className="btn btn-outline text-base md:text-lg px-6 md:px-8 py-3 md:py-4 inline-flex items-center gap-2 rounded-full">
               View All Products
               <FiArrowRight className="w-5 h-5" />
             </Link>
@@ -210,29 +210,29 @@ export default function HomePage() {
       </section>
 
       {/* Trust Badges */}
-      <section className="section bg-white">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[var(--color-primary,#D4AF37)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+      <section className="py-12 md:py-20 bg-white">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-[#d4a574]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <span className="text-3xl">✓</span>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Certified Jewelry</h3>
-              <p className="text-gray-600 text-sm">All our jewelry comes with BIS Hallmark certification</p>
+              <h3 className="font-bold text-lg mb-2">Certified Jewelry</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">All our jewelry comes with BIS Hallmark certification ensuring maximum purity and trust.</p>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[var(--color-primary,#D4AF37)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-[#d4a574]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <span className="text-3xl"><FiPenTool /></span>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Custom Design</h3>
-              <p className="text-gray-600 text-sm">Create your dream jewelry with our expert designers</p>
+              <h3 className="font-bold text-lg mb-2">Custom Design</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">Create your dream jewelry with our expert designers. We bring your vision to life.</p>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-[var(--color-primary,#D4AF37)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-[#d4a574]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <span className="text-3xl">↩</span>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Exchange Policy</h3>
-              <p className="text-gray-600 text-sm">Lifetime exchange on all gold jewelry purchases</p>
+              <h3 className="font-bold text-lg mb-2">Exchange Policy</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">Lifetime exchange on all gold jewelry purchases. Upgrade your style anytime you want.</p>
             </div>
           </div>
         </div>

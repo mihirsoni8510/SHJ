@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { useState } from 'react';
 import { FiSearch, FiHeart, FiShoppingCart, FiUser, FiMenu, FiX, FiLogOut } from 'react-icons/fi';
 import { useAuth, useCart, useWishlist, useLogout } from '@/hooks/useApi';
@@ -51,8 +52,16 @@ export default function Header() {
         <header className="relative bg-white z-40">
             <div className="container mx-auto px-4 max-w-7xl h-16 flex items-center justify-between">
                 {/* Logo */}
-                <Link href="/" className="flex items-center">
-                    <h1 className="text-lg sm:text-xl md:text-3xl font-bold tracking-tight leading-none" style={{ fontFamily: 'var(--font-heading)' }}>
+                <Link href="/" className="flex items-center gap-2 flex-shrink-0 max-w-[60%] xs:max-w-none group">
+                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0 overflow-hidden transform group-hover:scale-110 transition-transform duration-300">
+                        <NextImage 
+                            src="/logo-icon.png" 
+                            alt="Shree Harikrupa Jewellers Icon" 
+                            fill 
+                            className="object-contain"
+                        />
+                    </div>
+                    <h1 className="text-sm xs:text-base sm:text-xl md:text-2xl font-bold tracking-tight leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                         Shree Harikrupa Jewellers
                     </h1>
                 </Link>
@@ -71,25 +80,25 @@ export default function Header() {
                 </nav>
 
                 {/* Icons */}
-                <div className="flex items-center gap-2 md:gap-3">
+                <div className="flex items-center gap-0.5 xs:gap-1 sm:gap-2 md:gap-3">
                     {/* Search */}
                     <button
                         onClick={() => setIsSearchOpen(true)}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
                         aria-label="Search"
                     >
-                        <FiSearch className="w-5 h-5" />
+                        <FiSearch className="w-4 h-4 sm:w-5 h-5" />
                     </button>
 
                     {/* Wishlist */}
                     <Link
                         href="/wishlist"
-                        className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="relative p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
                         aria-label="Wishlist"
                     >
-                        <FiHeart className="w-5 h-5" />
+                        <FiHeart className="w-4 h-4 sm:w-5 h-5" />
                         {wishlistItems.length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-[var(--color-primary,#D4AF37)] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                            <span className="absolute top-0 right-0 bg-[var(--color-primary,#D4AF37)] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">
                                 {wishlistItems.length}
                             </span>
                         )}
@@ -98,119 +107,159 @@ export default function Header() {
                     {/* Cart */}
                     <Link
                         href="/cart"
-                        className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="relative p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
                         aria-label="Cart"
                     >
-                        <FiShoppingCart className="w-5 h-5" />
+                        <FiShoppingCart className="w-4 h-4 sm:w-5 h-5" />
                         {cartItems.length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-[var(--color-primary,#D4AF37)] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                            <span className="absolute top-0 right-0 bg-[var(--color-primary,#D4AF37)] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">
                                 {cartItems.length}
                             </span>
                         )}
                     </Link>
 
                     {/* User Menu */}
-                    {user ? (
-                        <div className="relative">
-                            <button
-                                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            >
-                                <FiUser className="w-5 h-5" />
-                            </button>
+                    <div className="relative">
+                        {user ? (
+                            <>
+                                <button
+                                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                    className="p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                >
+                                    <FiUser className="w-4 h-4 sm:w-5 h-5" />
+                                </button>
 
-                            {/* User Dropdown */}
-                            {isUserMenuOpen && (
-                                <>
-                                    <div
-                                        className="fixed inset-0 z-40"
-                                        onClick={() => setIsUserMenuOpen(false)}
-                                    />
-                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 animate-fadeIn">
-                                        <div className="p-4 border-b bg-gray-50/50">
-                                            <p className="font-semibold truncate text-gray-900">{user.name}</p>
-                                            <p className="text-sm text-gray-500 truncate">{user.email}</p>
-                                        </div>
-                                        <div className="py-2">
-                                            {user.role === 'admin' && (
+                                {isUserMenuOpen && (
+                                    <>
+                                        <div
+                                            className="fixed inset-0 z-40"
+                                            onClick={() => setIsUserMenuOpen(false)}
+                                        />
+                                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 animate-fadeIn">
+                                            <div className="p-4 border-b bg-gray-50/50">
+                                                <p className="font-semibold truncate text-gray-900">{user.name}</p>
+                                                <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                                            </div>
+                                            <div className="py-2">
+                                                {user.role === 'admin' && (
+                                                    <Link
+                                                        href="/admin"
+                                                        onClick={() => setIsUserMenuOpen(false)}
+                                                        className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                                                    >
+                                                        Admin Dashboard
+                                                    </Link>
+                                                )}
                                                 <Link
-                                                    href="/admin"
+                                                    href="/profile"
                                                     onClick={() => setIsUserMenuOpen(false)}
                                                     className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
                                                 >
-                                                    Admin Dashboard
+                                                    My Profile
                                                 </Link>
-                                            )}
-                                            <Link
-                                                href="/profile"
-                                                onClick={() => setIsUserMenuOpen(false)}
-                                                className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                                            >
-                                                My Profile
-                                            </Link>
-                                            <Link
-                                                href="/orders"
-                                                onClick={() => setIsUserMenuOpen(false)}
-                                                className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                                            >
-                                                My Orders
-                                            </Link>
-                                            <button
-                                                onClick={handleLogout}
-                                                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
-                                            >
-                                                <FiLogOut className="w-4 h-4" />
-                                                Logout
-                                            </button>
+                                                <Link
+                                                    href="/orders"
+                                                    onClick={() => setIsUserMenuOpen(false)}
+                                                    className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                                                >
+                                                    My Orders
+                                                </Link>
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                                                >
+                                                    <FiLogOut className="w-4 h-4" />
+                                                    Logout
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    ) : (
-                        <Link
-                            href="/auth/login"
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            aria-label="Login"
-                        >
-                            <FiUser className="w-5 h-5" />
-                        </Link>
-                    )}
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <Link
+                                href="/auth/login"
+                                className="p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                aria-label="Login"
+                            >
+                                <FiUser className="w-4 h-4 sm:w-5 h-5" />
+                            </Link>
+                        )}
+                    </div>
 
                     {/* Mobile Menu Toggle */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="lg:hidden p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors ml-0.5"
                         aria-label="Menu"
                     >
                         {isMenuOpen ? (
-                            <FiX className="w-6 h-6" />
+                            <FiX className="w-5 h-5 sm:w-6 h-6" />
                         ) : (
-                            <FiMenu className="w-6 h-6" />
+                            <FiMenu className="w-5 h-5 sm:w-6 h-6" />
                         )}
                     </button>
                 </div>
             </div>
 
             {/* Mobile Menu Dropdown */}
-            {isMenuOpen && (
-                <div className="absolute top-16 left-0 w-full bg-white shadow-lg border-t border-gray-100 z-50 lg:hidden animate-slideDown">
-                    <div className="container mx-auto px-4 py-4">
-                        <nav className="flex flex-col space-y-1">
-                            {navLinks.map((link) => (
+            <div className={`fixed inset-0 bg-black/50 z-50 lg:hidden transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMenuOpen(false)}>
+                <div
+                    className={`absolute right-0 top-0 h-full w-[280px] bg-white shadow-2xl transition-transform duration-300 ease-out p-6 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-heading)' }}>Menu</h2>
+                        <button onClick={() => setIsMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                            <FiX className="w-6 h-6" />
+                        </button>
+                    </div>
+                    <nav className="flex flex-col space-y-2">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="text-gray-800 hover:text-[var(--color-primary,#D4AF37)] hover:bg-amber-50 font-medium transition-colors px-4 py-3 rounded-xl flex items-center"
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <div className="mt-auto pt-8 border-t border-gray-100">
+                        {user ? (
+                            <div className="space-y-2">
                                 <Link
-                                    key={link.href}
-                                    href={link.href}
+                                    href="/profile"
                                     onClick={() => setIsMenuOpen(false)}
-                                    className="text-gray-800 hover:text-[var(--color-primary,#D4AF37)] hover:bg-gray-50 font-medium transition-colors px-4 py-3 rounded-lg flex items-center justify-between"
+                                    className="block px-4 py-3 text-gray-700 hover:bg-amber-50 rounded-xl"
                                 >
-                                    {link.label}
+                                    My Profile
                                 </Link>
-                            ))}
-                        </nav>
+                                <button
+                                    onClick={() => {
+                                        handleLogout();
+                                        setIsMenuOpen(false);
+                                    }}
+                                    className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl flex items-center gap-2"
+                                >
+                                    <FiLogOut className="w-4 h-4" />
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <Link
+                                href="/auth/login"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="block w-full text-center bg-[var(--color-primary,#D4AF37)] text-white py-3 rounded-xl font-semibold"
+                            >
+                                Login / Register
+                            </Link>
+                        )}
                     </div>
                 </div>
-            )}
+            </div>
 
             <style dangerouslySetInnerHTML={{
                 __html: `
