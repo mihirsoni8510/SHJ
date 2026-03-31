@@ -46,19 +46,19 @@ function ProductsContent() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 max-w-7xl mt-6 lg:mt-12">
-                <div className="flex flex-col lg:flex-row gap-8">
+            <div className="container mx-auto px-6 max-w-7xl mt-6 lg:mt-12 pb-12 lg:pb-20">
+                <div className="flex flex-col lg:flex-row gap-8 mt-4 mb-4">
                     {/* Sidebar Filters */}
-                    <aside className="w-full lg:w-64 space-y-6 lg:space-y-8">
+                    <aside className="w-full lg:w-64 space-y-4 lg:space-y-6">
                         <div>
                             <h3 className="text-lg font-bold text-gray-900 mb-4 hidden lg:flex items-center gap-2">
                                 <FiFilter className="w-5 h-5" /> Categories
                             </h3>
                             {/* Horizontal scroll on mobile, regular list on desktop */}
-                            <div className="flex lg:flex-col gap-2 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0">
+                            <div className="flex lg:flex-col gap-2 overflow-x-auto scrollbar-hide -mx-6 px-6 lg:mx-0 lg:px-0 scroll-smooth snap-x snap-mandatory">
                                 <Link
                                     href="/products"
-                                    className={`whitespace-nowrap px-4 py-2 rounded-lg transition-colors flex-shrink-0 ${!categorySlug && !searchParams.get('metal') ? 'bg-amber-500 text-white font-semibold shadow-md' : 'text-gray-600 bg-white border border-gray-100 lg:bg-transparent lg:border-0 hover:bg-gray-100'
+                                    className={`whitespace-nowrap px-4 py-2 rounded-lg transition-colors flex-shrink-0 snap-start ${!categorySlug && !searchParams.get('metal') ? 'bg-amber-500 text-white font-semibold shadow-md' : 'text-gray-600 bg-white border border-gray-100 lg:bg-transparent lg:border-0 hover:bg-gray-100'
                                         }`}
                                 >
                                     All Products
@@ -67,7 +67,7 @@ function ProductsContent() {
                                     <Link
                                         key={cat.id}
                                         href={`/products?category=${cat.slug}`}
-                                        className={`whitespace-nowrap px-4 py-2 rounded-lg transition-colors flex-shrink-0 ${categorySlug === cat.slug ? 'bg-amber-500 text-white font-semibold shadow-md' : 'text-gray-600 bg-white border border-gray-100 lg:bg-transparent lg:border-0 hover:bg-gray-100'
+                                        className={`whitespace-nowrap px-4 py-2 rounded-lg transition-colors flex-shrink-0 snap-start ${categorySlug === cat.slug ? 'bg-amber-500 text-white font-semibold shadow-md' : 'text-gray-600 bg-white border border-gray-100 lg:bg-transparent lg:border-0 hover:bg-gray-100'
                                             }`}
                                     >
                                         {cat.name}
@@ -106,7 +106,7 @@ function ProductsContent() {
                         </div>
 
                         {isLoading ? (
-                            <div className="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-10 gap-y-8 sm:gap-y-10">
                                 {[...Array(6)].map((_, i) => (
                                     <div key={i} className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-gray-100 animate-pulse">
                                         <div className="aspect-square sm:aspect-[4/5] bg-gray-200 rounded-xl mb-4" />
@@ -116,7 +116,7 @@ function ProductsContent() {
                                 ))}
                             </div>
                         ) : data?.products && data.products.length > 0 ? (
-                            <div className="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-10 gap-y-8 sm:gap-y-10">
                                 {data.products.map((product) => (
                                     <ProductCard key={product.id} product={product} />
                                 ))}
