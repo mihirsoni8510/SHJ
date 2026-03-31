@@ -84,7 +84,8 @@ img {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -93,7 +94,7 @@ img {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-primary);
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -101,6 +102,15 @@ img {
 }
 
 /* Utility Classes */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .container {
   width: 100%;
   max-width: 1400px;
