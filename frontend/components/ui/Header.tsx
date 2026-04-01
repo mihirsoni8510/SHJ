@@ -49,32 +49,33 @@ export default function Header() {
     ];
 
     return (
-        <header className="relative bg-white z-40">
+        <header className="sticky top-0 bg-white z-50 border-b border-gray-100 shadow-sm transition-all duration-300">
             <div className="container mx-auto px-4 max-w-7xl h-16 flex items-center justify-between">
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 flex-shrink-0 max-w-[60%] xs:max-w-none group">
-                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0 overflow-hidden transform group-hover:scale-110 transition-transform duration-300">
+                <Link href="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 group">
+                    <div className="relative w-8 h-8 sm:w-10 h-10 flex-shrink-0 overflow-hidden transform group-hover:scale-110 transition-transform duration-300">
                         <NextImage 
                             src="/logo-icon.png" 
-                            alt="Shree Harikrupa Jewellers Icon" 
+                            alt="SHJ Logo" 
                             fill 
                             className="object-contain"
                             priority
                             fetchPriority="high"
                         />
                     </div>
-                    <h1 className="text-sm xs:text-base sm:text-xl md:text-2xl font-bold tracking-tight leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-                        Shree Harikrupa Jewellers
+                    <h1 className="text-sm sm:text-lg md:text-2xl font-bold tracking-tight leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+                        <span className="inline sm:hidden">SHJ</span>
+                        <span className="hidden sm:inline">Shree Harikrupa Jewellers</span>
                     </h1>
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden lg:flex items-center gap-8">
+                <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
                     {navLinks.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
-                            className="text-gray-700 hover:text-[var(--color-primary,#D4AF37)] font-medium transition-colors"
+                            className="text-gray-700 hover:text-[#946f3a] font-medium transition-colors"
                         >
                             {link.label}
                         </Link>
@@ -82,25 +83,25 @@ export default function Header() {
                 </nav>
 
                 {/* Icons */}
-                <div className="flex items-center gap-0.5 xs:gap-1 sm:gap-2 md:gap-3">
+                <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2">
                     {/* Search */}
                     <button
                         onClick={() => setIsSearchOpen(true)}
-                        className="p-3 text-gray-700 hover:text-[#946f3a] transition-colors relative"
+                        className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors relative"
                         aria-label="Search items"
                     >
-                        <FiSearch className="w-6 h-6" />
+                        <FiSearch className="w-5 h-5 lg:w-6 h-6" />
                     </button>
                     
                     {/* Wishlist */}
                     <Link
                         href="/wishlist"
-                        className="relative p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
+                        className="relative p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
                         aria-label="Wishlist"
                     >
-                        <FiHeart className="w-6 h-6" />
+                        <FiHeart className="w-5 h-5 lg:w-6 h-6" />
                         {wishlistItems.length > 0 && (
-                            <span className="absolute top-2 right-2 bg-[#946f3a] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                            <span className="absolute top-1.5 right-1.5 lg:top-2 lg:right-2 bg-[#946f3a] text-white text-[8px] lg:text-[10px] w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full flex items-center justify-center font-bold">
                                 {wishlistItems.length}
                             </span>
                         )}
@@ -109,12 +110,12 @@ export default function Header() {
                     {/* Cart */}
                     <Link
                         href="/cart"
-                        className="relative p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
+                        className="relative p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
                         aria-label="Cart"
                     >
-                        <FiShoppingCart className="w-6 h-6" />
+                        <FiShoppingCart className="w-5 h-5 lg:w-6 h-6" />
                         {cartItems.length > 0 && (
-                            <span className="absolute top-2 right-2 bg-[#946f3a] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                            <span className="absolute top-1.5 right-1.5 lg:top-2 lg:right-2 bg-[#946f3a] text-white text-[8px] lg:text-[10px] w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full flex items-center justify-center font-bold">
                                 {cartItems.length}
                             </span>
                         )}
@@ -126,10 +127,10 @@ export default function Header() {
                             <>
                                 <button
                                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                                    className="p-3 text-gray-700 hover:text-[#946f3a] transition-colors flex items-center gap-1"
+                                    className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors flex items-center gap-1"
                                     aria-label="User menu"
                                 >
-                                    <FiUser className="w-6 h-6" />
+                                    <FiUser className="w-5 h-5 lg:w-6 h-6" />
                                 </button>
                                 {isUserMenuOpen && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-[100] animate-fade-in">
@@ -169,10 +170,10 @@ export default function Header() {
                         ) : (
                             <Link
                                 href="/auth/login"
-                                className="p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
+                                className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
                                 aria-label="Login"
                             >
-                                <FiUser className="w-6 h-6" />
+                                <FiUser className="w-5 h-5 lg:w-6 h-6" />
                             </Link>
                         )}
                     </div>
@@ -180,22 +181,22 @@ export default function Header() {
                     {/* Mobile Menu Toggle */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="lg:hidden p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
+                        className="lg:hidden p-2 text-gray-700 hover:text-[#946f3a] transition-colors"
                         aria-label="Menu"
                     >
                         {isMenuOpen ? (
-                            <FiX className="w-6 h-6" />
+                            <FiX className="w-5 h-5" />
                         ) : (
-                            <FiMenu className="w-6 h-6" />
+                            <FiMenu className="w-5 h-5" />
                         )}
                     </button>
                 </div>
             </div>
 
             {/* Mobile Menu Dropdown */}
-            <div className={`fixed inset-0 bg-black/50 z-50 lg:hidden transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMenuOpen(false)}>
+            <div className={`fixed inset-0 bg-black/50 z-[60] lg:hidden transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMenuOpen(false)}>
                 <div
-                    className={`absolute right-0 top-0 h-full w-[280px] bg-white shadow-2xl transition-transform duration-300 ease-out p-6 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                    className={`absolute right-0 top-0 h-full w-[280px] bg-white shadow-2xl transition-transform duration-300 ease-out p-6 flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex items-center justify-between mb-8">
@@ -204,7 +205,7 @@ export default function Header() {
                             <FiX className="w-6 h-6" />
                         </button>
                     </div>
-                    <nav className="flex flex-col space-y-2">
+                    <nav className="flex flex-col space-y-2 overflow-y-auto">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.href}
