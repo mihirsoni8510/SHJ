@@ -10,8 +10,6 @@ import { useState, useEffect } from 'react';
 export default function AdminProductsPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
-
-    // Debounce search term to avoid too many requests
     const [debouncedSearch, setDebouncedSearch] = useState('');
 
     useEffect(() => {

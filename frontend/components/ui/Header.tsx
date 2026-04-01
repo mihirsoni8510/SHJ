@@ -59,6 +59,8 @@ export default function Header() {
                             alt="Shree Harikrupa Jewellers Icon" 
                             fill 
                             className="object-contain"
+                            priority
+                            fetchPriority="high"
                         />
                     </div>
                     <h1 className="text-sm xs:text-base sm:text-xl md:text-2xl font-bold tracking-tight leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -84,21 +86,21 @@ export default function Header() {
                     {/* Search */}
                     <button
                         onClick={() => setIsSearchOpen(true)}
-                        className="p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
-                        aria-label="Search"
+                        className="p-3 text-gray-700 hover:text-[#946f3a] transition-colors relative"
+                        aria-label="Search items"
                     >
-                        <FiSearch className="w-4 h-4 sm:w-5 h-5" />
+                        <FiSearch className="w-6 h-6" />
                     </button>
-
+                    
                     {/* Wishlist */}
                     <Link
                         href="/wishlist"
-                        className="relative p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="relative p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
                         aria-label="Wishlist"
                     >
-                        <FiHeart className="w-4 h-4 sm:w-5 h-5" />
+                        <FiHeart className="w-6 h-6" />
                         {wishlistItems.length > 0 && (
-                            <span className="absolute top-0 right-0 bg-[var(--color-primary,#D4AF37)] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">
+                            <span className="absolute top-2 right-2 bg-[#946f3a] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                                 {wishlistItems.length}
                             </span>
                         )}
@@ -107,82 +109,70 @@ export default function Header() {
                     {/* Cart */}
                     <Link
                         href="/cart"
-                        className="relative p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="relative p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
                         aria-label="Cart"
                     >
-                        <FiShoppingCart className="w-4 h-4 sm:w-5 h-5" />
+                        <FiShoppingCart className="w-6 h-6" />
                         {cartItems.length > 0 && (
-                            <span className="absolute top-0 right-0 bg-[var(--color-primary,#D4AF37)] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">
+                            <span className="absolute top-2 right-2 bg-[#946f3a] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                                 {cartItems.length}
                             </span>
                         )}
                     </Link>
 
-                    {/* User Menu */}
+                    {/* User Menu / Login */}
                     <div className="relative">
                         {user ? (
                             <>
                                 <button
                                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                                    className="p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                    className="p-3 text-gray-700 hover:text-[#946f3a] transition-colors flex items-center gap-1"
+                                    aria-label="User menu"
                                 >
-                                    <FiUser className="w-4 h-4 sm:w-5 h-5" />
+                                    <FiUser className="w-6 h-6" />
                                 </button>
-
                                 {isUserMenuOpen && (
-                                    <>
-                                        <div
-                                            className="fixed inset-0 z-40"
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-[100] animate-fade-in">
+                                        {user.role === 'ADMIN' && (
+                                            <Link
+                                                href="/admin"
+                                                onClick={() => setIsUserMenuOpen(false)}
+                                                className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#946f3a] transition-colors font-medium border-b border-gray-50"
+                                            >
+                                                Admin Dashboard
+                                            </Link>
+                                        )}
+                                        <Link
+                                            href="/profile"
                                             onClick={() => setIsUserMenuOpen(false)}
-                                        />
-                                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 animate-fadeIn">
-                                            <div className="p-4 border-b bg-gray-50/50">
-                                                <p className="font-semibold truncate text-gray-900">{user.name}</p>
-                                                <p className="text-sm text-gray-500 truncate">{user.email}</p>
-                                            </div>
-                                            <div className="py-2">
-                                                {user.role === 'admin' && (
-                                                    <Link
-                                                        href="/admin"
-                                                        onClick={() => setIsUserMenuOpen(false)}
-                                                        className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                                                    >
-                                                        Admin Dashboard
-                                                    </Link>
-                                                )}
-                                                <Link
-                                                    href="/profile"
-                                                    onClick={() => setIsUserMenuOpen(false)}
-                                                    className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                                                >
-                                                    My Profile
-                                                </Link>
-                                                <Link
-                                                    href="/orders"
-                                                    onClick={() => setIsUserMenuOpen(false)}
-                                                    className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                                                >
-                                                    My Orders
-                                                </Link>
-                                                <button
-                                                    onClick={handleLogout}
-                                                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
-                                                >
-                                                    <FiLogOut className="w-4 h-4" />
-                                                    Logout
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </>
+                                            className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#946f3a] transition-colors"
+                                        >
+                                            My Profile
+                                        </Link>
+                                        <Link
+                                            href="/orders"
+                                            onClick={() => setIsUserMenuOpen(false)}
+                                            className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-[#946f3a] transition-colors"
+                                        >
+                                            My Orders
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 mt-1 border-t border-gray-50 pt-3"
+                                        >
+                                            <FiLogOut className="w-4 h-4" />
+                                            Logout
+                                        </button>
+                                    </div>
                                 )}
                             </>
                         ) : (
                             <Link
                                 href="/auth/login"
-                                className="p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                className="p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
                                 aria-label="Login"
                             >
-                                <FiUser className="w-4 h-4 sm:w-5 h-5" />
+                                <FiUser className="w-6 h-6" />
                             </Link>
                         )}
                     </div>
@@ -190,13 +180,13 @@ export default function Header() {
                     {/* Mobile Menu Toggle */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="lg:hidden p-1.5 xs:p-2 hover:bg-gray-100 rounded-full transition-colors ml-0.5"
+                        className="lg:hidden p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
                         aria-label="Menu"
                     >
                         {isMenuOpen ? (
-                            <FiX className="w-5 h-5 sm:w-6 h-6" />
+                            <FiX className="w-6 h-6" />
                         ) : (
-                            <FiMenu className="w-5 h-5 sm:w-6 h-6" />
+                            <FiMenu className="w-6 h-6" />
                         )}
                     </button>
                 </div>
@@ -210,7 +200,7 @@ export default function Header() {
                 >
                     <div className="flex items-center justify-between mb-8">
                         <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-heading)' }}>Menu</h2>
-                        <button onClick={() => setIsMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                        <button onClick={() => setIsMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full" aria-label="Close menu">
                             <FiX className="w-6 h-6" />
                         </button>
                     </div>
@@ -310,6 +300,7 @@ export default function Header() {
                                     type="button"
                                     onClick={() => setIsSearchOpen(false)}
                                     className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500 shrink-0"
+                                    aria-label="Close search"
                                 >
                                     <FiX className="w-5 h-5 sm:w-6 sm:h-6" />
                                 </button>

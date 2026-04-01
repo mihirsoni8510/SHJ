@@ -40,5 +40,12 @@
     "eslint-config-next": "^15.2.0",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "browserslist": [
+    "last 1 year",
+    "> 0.5%",
+    "not dead",
+    "not ie 11",
+    "not ie_mob 11"
+  ]
 }

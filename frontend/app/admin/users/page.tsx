@@ -1,7 +1,7 @@
 'use client';
 
 import { useAdminUsers, useUpdateUserRole } from '@/hooks/useApi';
-import { FiSearch, FiUser, FiMail, FiPhone, FiCalendar, FiShield } from 'react-icons/fi';
+import { FiSearch, FiMail, FiPhone, FiCalendar, FiShield } from 'react-icons/fi';
 import { useState } from 'react';
 import { toast } from 'sonner';
 

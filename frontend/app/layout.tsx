@@ -1,9 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 import Providers from "@/components/providers";
 import LayoutContent from "@/components/LayoutContent";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "Shree Harikrupa Jewellers - Exquisite Jewelry Collection",
@@ -17,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className={`${inter.variable} ${playfair.variable} antialiased`}>
         <Providers>
           <LayoutContent>
             {children}

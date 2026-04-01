@@ -84,7 +84,6 @@ export default function CartPage() {
                             return (
                                 <Fragment key={item.id}>
                                     <div className="relative flex gap-4 p-4 sm:p-6 border-b last:border-b-0">
-                                        {/* Remove Button - Absolute Top Right */}
                                         <button
                                             onClick={() => handleRemove(item.productId)}
                                             className="absolute top-4 right-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all z-10"
