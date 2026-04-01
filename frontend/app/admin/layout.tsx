@@ -25,8 +25,6 @@ export default function AdminLayout({
                 setIsSidebarOpen(false);
             }
         };
-
-        // Set initial state
         handleResize();
 
         window.addEventListener('resize', handleResize);

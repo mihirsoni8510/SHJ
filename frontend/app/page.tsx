@@ -1,23 +1,13 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
-import { useProducts } from '@/hooks/useApi';
+import { getProductsAction } from '@/app/actions/products';
 import { FiArrowRight, FiPenTool } from 'react-icons/fi';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation, EffectFade } from 'swiper/modules';
+import HeroSlider from '@/components/HeroSlider';
 
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import 'swiper/css/effect-fade';
-
-export default function HomePage() {
-  const router = useRouter();
-  const { data, isLoading } = useProducts({ limit: 8 });
+export default async function HomePage() {
+  const result = await getProductsAction({ limit: 8 });
+  const products = result.products || [];
 
   const categories = [
     { name: 'Gold Jewelry', slug: 'gold', image: '/home/gold.webp' },
@@ -63,60 +53,8 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero Slider Section */}
-      <section className="hero-slider-section">
-            <Swiper
-          modules={[Autoplay, Pagination, Navigation, EffectFade]}
-          spaceBetween={0}
-          slidesPerView={1}
-          effect="fade"
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          pagination={{
-            clickable: true,
-            dynamicBullets: true,
-          }}
-          navigation={true}
-          loop={true}
-          className="hero-swiper h-[500px] md:h-[600px]"
-        >
-          {heroSlides.map((slide) => (
-            <SwiperSlide key={slide.id}>
-              <div className="relative h-full flex items-center justify-center overflow-hidden">
-                <Image
-                  src={slide.image}
-                  alt={slide.title}
-                  fill
-                  className="object-cover"
-                  priority={slide.id === 1}
-                />
-                <div className="absolute inset-0 bg-black/40" />
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-                  <h2
-                    className="text-white text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight animate-fade-in-up px-4"
-                    style={{ fontFamily: 'var(--font-heading)' }}
-                  >
-                    {slide.title}
-                  </h2>
-                  <p className="text-gray-100 text-lg sm:text-xl md:text-2xl mb-8 md:mb-10 max-w-2xl font-light animate-fade-in-up animation-delay-200 px-4">
-                    {slide.subtitle}
-                  </p>
-                  <button
-                    onClick={() => router.push(slide.buttonLink)}
-                    className="bg-[#d4a574] text-white px-8 md:px-10 py-3 md:py-4 rounded-full transition-all transform hover:scale-105 shadow-xl flex items-center gap-3 font-semibold text-base md:text-lg animate-fade-in-up animation-delay-400"
-                  >
-                    {slide.buttonText}
-                    <FiArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-      </section>
+      {/* Hero Slider Section - Client Component with Server-defined Data */}
+      <HeroSlider slides={heroSlides} />
 
       {/* Shop by Category */}
       <section className="py-12 md:py-20 bg-white">
@@ -147,6 +85,7 @@ export default function HomePage() {
                   alt={category.name}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
 
                 {/* Text */}
@@ -157,17 +96,16 @@ export default function HomePage() {
                   >
                     {category.name}
                   </h3>
-                  <div className="flex items-center text-[#d4a574] font-semibold group-hover:translate-x-2 transition-transform cursor-pointer">
+                  <Link href={`/products?category=${category.slug}`} className="flex items-center text-[#d4a574] font-semibold group-hover:translate-x-2 transition-transform cursor-pointer">
                     View Collection
                     <FiArrowRight className="ml-2" />
-                  </div>
+                  </Link>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-
 
       {/* Featured Products */}
       <section className="py-12 md:py-20 bg-amber-50/30">
@@ -181,15 +119,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          {isLoading ? (
+          {products.length > 0 ? (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="skeleton h-64 md:h-96 rounded-lg"></div>
-              ))}
-            </div>
-          ) : data?.products && data.products.length > 0 ? (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {data.products.map((product) => (
+              {products.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

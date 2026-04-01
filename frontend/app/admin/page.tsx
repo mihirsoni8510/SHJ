@@ -11,8 +11,6 @@ import {
 import Link from 'next/link';
 import { useAdminOrders, useAdminUsers, useAdminProducts } from '@/hooks/useApi';
 
-
-
 export default function AdminDashboard() {
     const { data: orders = [], isLoading: isLoadingOrders } = useAdminOrders();
     const { data: users = [], isLoading: isLoadingUsers } = useAdminUsers();
@@ -43,12 +41,9 @@ export default function AdminDashboard() {
     const totalCustomersCount = users.filter(u => u.role === 'user').length;
 
     // 5. Recent Orders (Sort by date desc, take top 5)
-    // Note: Assuming API might return sorted, but sorting here to be sure
     const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     const recentOrders = sortedOrders.slice(0, 5);
 
-    // 6. Category Sales
-    // We need to aggregate sales by category
     const categorySales: Record<string, number> = {};
     let totalSalesValue = 0;
 
@@ -120,7 +115,7 @@ export default function AdminDashboard() {
             color: 'text-amber-600'
         },
         {
-            label: 'Total Customers', // Changed from "New Customers" to be more accurate
+            label: 'Total Customers', 
             value: totalCustomersCount.toString(),
             change: '',
             up: true,

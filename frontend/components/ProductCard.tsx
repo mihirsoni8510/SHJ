@@ -59,11 +59,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-500"
                         onError={() => setImageError(true)}
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 300px"
+                        quality={75}
                     />
 
                     {/* Discount Badge */}
                     {hasDiscount && (
-                        <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+                        <div className="absolute top-3 left-3 bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">
                             {discountPercent}% OFF
                         </div>
                     )}
@@ -114,11 +116,11 @@ export default function ProductCard({ product }: ProductCardProps) {
                     <div className="flex items-end justify-between mt-auto pt-2 border-t border-gray-50">
                         <div className="flex flex-col">
                             <div className="flex flex-col gap-0.5">
-                                <span className="text-base sm:text-lg font-bold text-amber-600">
+                                <span className="text-base sm:text-lg font-bold text-amber-700">
                                     ₹{displayPrice.toLocaleString('en-IN')}
                                 </span>
                                 {hasDiscount && (
-                                    <span className="text-[10px] sm:text-xs text-gray-400 line-through">
+                                    <span className="text-[10px] sm:text-xs text-gray-500 line-through">
                                         ₹{product.price.toLocaleString('en-IN')}
                                     </span>
                                 )}
