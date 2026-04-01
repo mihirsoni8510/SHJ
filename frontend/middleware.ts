@@ -12,7 +12,10 @@ const AUTH_ROUTES = ['/auth/login'];
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const token = request.cookies.get('token')?.value;
-    const nextAuthToken = await getToken({ req: request });
+    const nextAuthToken = await getToken({ 
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET 
+    });
 
     let userPayload = null;
 
