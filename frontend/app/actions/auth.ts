@@ -1,15 +1,9 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import {
-    hashPassword,
-    verifyPassword,
-    generateToken,
-    setAuthCookie,
     removeAuthCookie,
     getCurrentUser,
-    getGuestId
 } from '@/lib/auth';
 
 export async function logoutAction() {

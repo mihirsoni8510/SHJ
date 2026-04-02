@@ -201,3 +201,37 @@ export async function getAdminProductsAction(filters?: { category?: string; sear
         return { products: [], error: 'Internal server error' };
     }
 }
+
+export async function getAdminOrderAction(id: string) {
+    try {
+        const user = await getCurrentUser();
+        if (!user || user.role.toLowerCase() !== 'admin') {
+            return { error: 'Unauthorized' };
+        }
+
+        const order = await prisma.order.findUnique({
+            where: { id },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        email: true,
+                    },
+                },
+                orderItems: {
+                    include: {
+                        product: true,
+                    },
+                },
+                address: true,
+            },
+        });
+
+        if (!order) return { error: 'Order not found' };
+
+        return { order: JSON.parse(JSON.stringify(order)) };
+    } catch (error) {
+        console.error('Get admin order action error:', error);
+        return { error: 'Internal server error' };
+    }
+}
