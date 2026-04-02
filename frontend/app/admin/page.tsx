@@ -4,9 +4,7 @@ import {
     FiShoppingBag,
     FiUsers,
     FiShoppingCart,
-    FiTrendingUp,
-    FiArrowUpRight,
-    FiArrowDownRight
+    FiTrendingUp
 } from 'react-icons/fi';
 import Link from 'next/link';
 import { useAdminOrders, useAdminUsers, useAdminProducts } from '@/hooks/useApi';
@@ -28,19 +26,19 @@ export default function AdminDashboard() {
 
     // --- Stats Calculations ---
 
-    // 1. Total Revenue
+    //  Total Revenue
     const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
 
-    // 2. Total Orders
+    //  Total Orders
     const totalOrdersCount = orders.length;
 
-    // 3. Total Products
+    //  Total Products
     const totalProductsCount = products.length;
 
-    // 4. Total Customers (Role = 'user')
+    //  Total Customers (Role = 'user')
     const totalCustomersCount = users.filter(u => u.role === 'user').length;
 
-    // 5. Recent Orders (Sort by date desc, take top 5)
+    //  Recent Orders (Sort by date desc, take top 5)
     const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     const recentOrders = sortedOrders.slice(0, 5);
 
@@ -68,7 +66,7 @@ export default function AdminDashboard() {
         .sort((a, b) => b.value - a.value) // Sort by highest sales
         .slice(0, 5); // Take top 5 categories
 
-    // Helper for currency formatting
+
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-IN', {
             style: 'currency',
@@ -77,7 +75,6 @@ export default function AdminDashboard() {
         }).format(amount);
     };
 
-    // Helper for date formatting
     const formatDate = (dateString: Date) => {
         return new Date(dateString).toLocaleDateString('en-IN', {
             day: 'numeric',
@@ -143,10 +140,6 @@ export default function AdminDashboard() {
                             <div className={`${stat.bg} ${stat.color} p-3 rounded-xl`}>
                                 <stat.icon className="w-6 h-6" />
                             </div>
-                            {/* <div className={`flex items-center gap-1 text-sm font-medium ${stat.up ? 'text-emerald-600' : 'text-red-600'}`}>
-                                {stat.change}
-                                {stat.up ? <FiArrowUpRight /> : <FiArrowDownRight />}
-                            </div> */}
                         </div>
                         <p className="text-gray-500 text-sm font-medium">{stat.label}</p>
                         <h3 className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</h3>

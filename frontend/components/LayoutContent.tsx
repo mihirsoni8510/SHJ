@@ -11,9 +11,6 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
     const isAuthPage = pathname?.startsWith('/auth');
     const isAdminPage = pathname?.startsWith('/admin');
 
-    // Specifically requested: no footer in login and register
-    // We'll also hide the main header for auth and admin pages since they usually have their own or none
-
     return (
         <>
             {!isAuthPage && !isAdminPage && <Header />}

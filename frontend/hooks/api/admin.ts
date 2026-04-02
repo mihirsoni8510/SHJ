@@ -7,8 +7,21 @@ import {
     getAdminOrdersAction,
     updateOrderStatusAction,
     getAdminUsersAction,
-    updateUserRoleAction
+    updateUserRoleAction,
+    getAdminOrderAction
 } from '@/app/actions/admin';
+
+export function useAdminOrder(id: string) {
+    return useQuery({
+        queryKey: ['admin-orders', id],
+        queryFn: async () => {
+            const result = await getAdminOrderAction(id);
+            if (result.error) throw new Error(result.error);
+            return result.order as Order & { user: { name: string; email: string }; address: any };
+        },
+        enabled: !!id,
+    });
+}
 
 export function useAdminOrders() {
     return useQuery({

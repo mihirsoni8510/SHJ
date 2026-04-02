@@ -5,7 +5,6 @@ import { FiSearch, FiMail, FiPhone, FiCalendar, FiShield } from 'react-icons/fi'
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-
 export default function AdminUsersPage() {
     const { data: users = [], isLoading } = useAdminUsers();
     const updateUserRole = useUpdateUserRole();
