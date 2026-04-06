@@ -19,7 +19,7 @@ export async function createOrderAction(orderData: {
         const user = await getCurrentUser();
         if (!user) return { error: 'Unauthorized' };
 
-        //  Get cart items
+        // Get cart items
         const cartItems = await prisma.cartItem.findMany({
             where: { userId: user.id },
             include: { product: true }
@@ -27,7 +27,7 @@ export async function createOrderAction(orderData: {
 
         if (cartItems.length === 0) return { error: 'Cart is empty' };
 
-        //  Calculate totals
+        // Calculate totals
         const subtotal = cartItems.reduce((sum, item) => {
             const price = item.product.salePrice || item.product.price;
             return sum + (price * item.quantity);
@@ -37,7 +37,7 @@ export async function createOrderAction(orderData: {
         const shippingCharge = subtotal > 25000 ? 0 : 500;
         const total = subtotal + tax + shippingCharge;
 
-        //  Create Address
+        // Create Address
         const address = await prisma.address.create({
             data: {
                 userId: user.id,
@@ -46,11 +46,11 @@ export async function createOrderAction(orderData: {
             }
         });
 
-        //  Generate Order Number
+        // Generate Order Number
         const orderCount = await prisma.order.count();
         const orderNumber = `SHJ-${new Date().getFullYear()}-${1001 + orderCount}`;
 
-        //  Create Order with Items (Transaction)
+        // Create Order with Items (Transaction)
         const order = await prisma.$transaction(async (tx) => {
             const newOrder = await tx.order.create({
                 data: {
@@ -63,7 +63,7 @@ export async function createOrderAction(orderData: {
                     total,
                     paymentMethod: orderData.paymentMethod,
                     status: 'pending',
-                    paymentStatus: orderData.paymentMethod === 'COD' ? 'pending' : 'paid', // Simple logic for now
+                    paymentStatus: orderData.paymentMethod === 'COD' ? 'pending' : 'paid',
                     orderItems: {
                         create: cartItems.map(item => ({
                             productId: item.productId,
@@ -74,12 +74,12 @@ export async function createOrderAction(orderData: {
                 }
             });
 
-            //  Clear Cart
+            // Clear Cart
             await tx.cartItem.deleteMany({
                 where: { userId: user.id }
             });
 
-            //  Update Stock
+            // Update Stock
             for (const item of cartItems) {
                 await tx.product.update({
                     where: { id: item.productId },
@@ -104,50 +104,75 @@ export async function createOrderAction(orderData: {
     }
 }
 
-export async function getOrdersAction() {
+export async function getUserOrdersAction() {
     try {
         const user = await getCurrentUser();
-        if (!user) return { error: 'Unauthorized' };
+        if (!user) {
+            return { error: 'Unauthorized' };
+        }
 
         const orders = await prisma.order.findMany({
-            where: { userId: user.id },
+            where: {
+                userId: user.id,
+            },
             include: {
                 orderItems: {
-                    include: { product: true }
+                    include: {
+                        product: true,
+                    },
                 },
-                address: true
+                address: true,
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: {
+                createdAt: 'desc',
+            },
         });
 
-        return { orders };
+        return { orders: JSON.parse(JSON.stringify(orders)) };
     } catch (error) {
-        console.error('Get orders error:', error);
-        return { error: 'Failed to fetch orders' };
+        console.error('Get user orders action error:', error);
+        return { orders: [], error: 'Internal server error' };
     }
 }
 
-export async function getOrderAction(id: string) {
+export async function getOrderDetailsAction(orderId: string) {
     try {
         const user = await getCurrentUser();
-        if (!user) return { error: 'Unauthorized' };
+        if (!user) {
+            return { error: 'Unauthorized' };
+        }
 
-        const order = await prisma.order.findFirst({
-            where: { 
-                id,
-                userId: user.id 
+        const order = await prisma.order.findUnique({
+            where: {
+                id: orderId,
             },
             include: {
                 orderItems: {
-                    include: { product: true }
+                    include: {
+                        product: true,
+                    },
                 },
-                address: true
-            }
+                address: true,
+                user: {
+                    select: {
+                        name: true,
+                        email: true,
+                    }
+                }
+            },
         });
 
-        return { order };
+        if (!order) {
+            return { error: 'Order not found' };
+        }
+
+        if (order.userId !== user.id && user.role.toLowerCase() !== 'admin') {
+            return { error: 'Unauthorized' };
+        }
+
+        return { order: JSON.parse(JSON.stringify(order)) };
     } catch (error) {
-        console.error('Get order error:', error);
-        return { error: 'Failed to fetch order' };
+        console.error('Get order details action error:', error);
+        return { error: 'Internal server error' };
     }
 }

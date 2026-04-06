@@ -87,7 +87,7 @@ export default function Header() {
                     {/* Search */}
                     <button
                         onClick={() => setIsSearchOpen(true)}
-                        className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors relative"
+                        className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors flex items-center justify-center"
                         aria-label="Search items"
                     >
                         <FiSearch className="w-5 h-5 lg:w-6 h-6" />
@@ -96,12 +96,12 @@ export default function Header() {
                     {/* Wishlist */}
                     <Link
                         href="/wishlist"
-                        className="relative p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
+                        className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors relative flex items-center justify-center"
                         aria-label="Wishlist"
                     >
                         <FiHeart className="w-5 h-5 lg:w-6 h-6" />
                         {wishlistItems.length > 0 && (
-                            <span className="absolute top-1.5 right-1.5 lg:top-2 lg:right-2 bg-[#946f3a] text-white text-[8px] lg:text-[10px] w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full flex items-center justify-center font-bold">
+                            <span className="absolute top-1 lg:top-1.5 right-1 lg:right-1.5 bg-[#946f3a] text-white text-[8px] lg:text-[10px] w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full flex items-center justify-center font-bold border-2 border-white">
                                 {wishlistItems.length}
                             </span>
                         )}
@@ -110,12 +110,12 @@ export default function Header() {
                     {/* Cart */}
                     <Link
                         href="/cart"
-                        className="relative p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
+                        className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors relative flex items-center justify-center"
                         aria-label="Cart"
                     >
                         <FiShoppingCart className="w-5 h-5 lg:w-6 h-6" />
                         {cartItems.length > 0 && (
-                            <span className="absolute top-1.5 right-1.5 lg:top-2 lg:right-2 bg-[#946f3a] text-white text-[8px] lg:text-[10px] w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full flex items-center justify-center font-bold">
+                            <span className="absolute top-1 lg:top-1.5 right-1 lg:right-1.5 bg-[#946f3a] text-white text-[8px] lg:text-[10px] w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full flex items-center justify-center font-bold border-2 border-white">
                                 {cartItems.length}
                             </span>
                         )}
@@ -127,13 +127,13 @@ export default function Header() {
                             <>
                                 <button
                                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                                    className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors flex items-center gap-1"
+                                    className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors flex items-center justify-center"
                                     aria-label="User menu"
                                 >
                                     <FiUser className="w-5 h-5 lg:w-6 h-6" />
                                 </button>
                                 {isUserMenuOpen && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-[100] animate-fade-in">
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-[100] animate-fadeIn">
                                         {user.role === 'ADMIN' && (
                                             <Link
                                                 href="/admin"
@@ -170,7 +170,7 @@ export default function Header() {
                         ) : (
                             <Link
                                 href="/auth/login"
-                                className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors"
+                                className="p-2 lg:p-3 text-gray-700 hover:text-[#946f3a] transition-colors flex items-center justify-center"
                                 aria-label="Login"
                             >
                                 <FiUser className="w-5 h-5 lg:w-6 h-6" />
@@ -227,6 +227,13 @@ export default function Header() {
                                     className="block px-4 py-3 text-gray-700 hover:bg-amber-50 rounded-xl"
                                 >
                                     My Profile
+                                </Link>
+                                <Link
+                                    href="/orders"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="block px-4 py-3 text-gray-700 hover:bg-amber-50 rounded-xl"
+                                >
+                                    My Orders
                                 </Link>
                                 <button
                                     onClick={() => {
