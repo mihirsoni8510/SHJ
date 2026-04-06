@@ -3,10 +3,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import type { Order } from '@/lib/types';
 import {
     createOrderAction,
-    getOrdersAction,
-    getOrderAction
+    getUserOrdersAction,
+    getOrderDetailsAction
 } from '@/app/actions/orders';
 
 export function useCreateOrder() {
@@ -29,9 +30,9 @@ export function useCreateOrder() {
             if (result.error) throw new Error(result.error);
             return result;
         },
-        onSuccess: (data) => {
+        onSuccess: (data: any) => {
             queryClient.invalidateQueries({ queryKey: ['cart'] });
-            queryClient.invalidateQueries({ queryKey: ['orders'] });
+            queryClient.invalidateQueries({ queryKey: ['user-orders'] });
             toast.success('Order placed successfully!');
             router.push(`/orders/${data.orderId}?success=true`);
         },
@@ -41,25 +42,25 @@ export function useCreateOrder() {
     });
 }
 
-export function useOrders() {
+export function useUserOrders() {
     return useQuery({
-        queryKey: ['orders'],
+        queryKey: ['user-orders'],
         queryFn: async () => {
-            const result = await getOrdersAction();
+            const result = await getUserOrdersAction();
             if (result.error) throw new Error(result.error);
-            return result.orders;
+            return result.orders as Order[];
         },
     });
 }
 
-export function useOrder(id: string) {
+export function useOrderDetails(orderId: string) {
     return useQuery({
-        queryKey: ['orders', id],
+        queryKey: ['order-details', orderId],
         queryFn: async () => {
-            const result = await getOrderAction(id);
+            const result = await getOrderDetailsAction(orderId);
             if (result.error) throw new Error(result.error);
             return result.order;
         },
-        enabled: !!id,
+        enabled: !!orderId,
     });
 }
